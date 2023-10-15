@@ -1,16 +1,17 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import CustomTable from './CustomTable'
-function App() {
-  const [count, setCount] = useState(0)
+import './App.css';
+import CustomTable from './CustomTable';
+import NavBar from './NavBar';
+import FileUpload from './FileUpload';
 
-  return (
-    <>
-     <CustomTable/>
-    </>
-  )
+function App () {
+	
+	return (
+		<>
+			<NavBar/>
+			<FileUpload/>
+			<CustomTable/>
+		</>
+	)
 }
 
-export default App
+export default App;
