@@ -21,15 +21,15 @@ export default function TemplateDemo() {
         let _totalSize = totalSize;
         let files = e.files;
         setFile(e.files[0]);
-
-        Object.keys(files).forEach((key) => {
-            _totalSize += files[key].size || 0;
-        });
-
-        setTotalSize(_totalSize);
+        console.log(e);
+        // Object.keys(files).forEach((key) => {
+        //     _totalSize += files[key].size || 0;
+        // });
+        setTotalSize(e.files[0].size);
     };
 
     const onTemplateUpload = async (e) => {
+        
         let _totalSize = 0;
 
         e.files.forEach((file) => {
@@ -52,16 +52,17 @@ export default function TemplateDemo() {
     const headerTemplate = (options) => {
         const { className, chooseButton, uploadButton, cancelButton } = options;
         const value = totalSize / 10000;
-        const formatedValue = fileUploadRef && fileUploadRef.current ? fileUploadRef.current.formatSize(totalSize) : '0 B';
+        const formatedValue = (fileUploadRef && fileUploadRef.current) ?  fileUploadRef.current.formatSize(totalSize) : '0 B';
+
 
         return (
             <div className={className} style={{ backgroundColor: 'transparent', display: 'flex', alignItems: 'center' }}>
                 {chooseButton}
                 {uploadButton}
                 {cancelButton}
-                <div className="flex align-items-center gap-3 ml-auto">
-                    <span>{formatedValue} / 1 MB</span>
-                    <ProgressBar value={value} showValue={false} style={{ width: '10rem', height: '12px' }}></ProgressBar>
+                <div className="upoader-header flex align-items-center gap-3 ml-auto">
+                    <span>{formatedValue!='0 B'? formatedValue : ""}</span>
+                    {/* <ProgressBar value={value} showValue={false} style={{ width: '10rem', height: '12px' }}></ProgressBar> */}
                 </div>
             </div>
         );
@@ -72,7 +73,7 @@ export default function TemplateDemo() {
             <div className="flex align-items-center flex-wrap">
                 <div className="flex align-items-center" style={{ width: '40%' }}>
                     <i className='pi pi-file-pdf' style={{ fontSize: '1.5rem' }} />
-                    <span className="flex flex-column text-left ml-3">
+                    <span className="file-name flex flex-column text-left ml-3">
                         {file.name}
                         <small>{new Date().toLocaleDateString()}</small>
                     </span>
@@ -87,14 +88,14 @@ export default function TemplateDemo() {
         return (
             <div className="flex align-items-center flex-column">
                 <i className="pi pi-file mt-3 p-5" style={{ fontSize: '5em', borderRadius: '50%', backgroundColor: 'var(--surface-b)', color: 'var(--surface-d)' }}></i>
-                <span style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }} className="my-5">
+                <span className="empty-container my-5" style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }}>
                     Drag and Drop File Here
                 </span>
             </div>
         );
     };
 
-    const chooseOptions = { icon: 'pi pi-fw pi-images', iconOnly: true, className: 'custom-choose-btn p-button-rounded p-button-outlined' };
+    const chooseOptions = { icon: 'pi pi-fw pi-file-import', iconOnly: true, className: 'custom-choose-btn p-button-rounded p-button-outlined' };
     const uploadOptions = { icon: 'pi pi-fw pi-cloud-upload', iconOnly: true, className: 'custom-upload-btn p-button-success p-button-rounded p-button-outlined' };
     const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined' };
 
@@ -121,17 +122,17 @@ export default function TemplateDemo() {
                     <Toast ref={toast}></Toast>
         
                     <Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
-                    
                     <Tooltip target=".custom-upload-btn" content="Upload" position="bottom" />
                     <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
         
                     <FileUpload
+                        className='file-upload-container'
                         ref={fileUploadRef}
                         name="text"
                         customUpload
                         uploadHandler={uploadPdf}
                         accept={".pdf, .mp4"}
-                        maxFileSize={1000000}
+                        // maxFileSize={10000000000}
                         onUpload={onTemplateUpload}
                         onSelect={onTemplateSelect}
                         onError={onTemplateClear}
