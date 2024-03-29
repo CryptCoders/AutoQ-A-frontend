@@ -3,6 +3,7 @@ html {
 }
 
 body {
+    margin: 0;
     font-family: var(--font-family);
     font-weight: normal;
     /*background: var(--surface-ground);*/
@@ -18,4 +19,12 @@ body {
     margin: 0 auto;
     padding: 2rem;
     border-radius: 10px;
+}
+
+.p-menubar-root-list > .p-menuitem > .p-menuitem-link:not(.p-disabled):hover {
+    background: #008ceb !important;
+}
+
+.p-menuitem-text .p-menuitem-icon {
+    color: #fff !important;
 }

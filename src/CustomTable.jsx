@@ -10,27 +10,29 @@ import { useLocation } from 'react-router-dom';
 // import axios from "axios";
 
 const CustomTable = () => {
-	const [products, setProducts] = useState ([]);
+	const { state } = useLocation();
+	const [products, setProducts] = useState (state);
+	console.log(products);
 	const dt = useRef (null);
 	// const [loading, setLoading] = useState (false);
 	const [filters, setFilters] = useState ({
 		global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-		name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-		category: { value: null, matchMode: FilterMatchMode.IN },
-		quantity: { value: null, matchMode: FilterMatchMode.EQUALS },
+		question: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+		answer: { value: null, matchMode: FilterMatchMode.IN },
+		type: { value: null, matchMode: FilterMatchMode.EQUALS },
 		
 	});
 	const [globalFilterValue, setGlobalFilterValue] = useState ('');
 	const cols = [
-		{ field: 'name', header: 'Questions' },
-		{ field: 'category', header: 'Answers' },
-		{ field: 'quantity', header: 'Type' }
+		{ field: 'question', header: 'Questions' },
+		{ field: 'answer', header: 'Answers' },
+		{ field: 'type', header: 'Type' }
 	];
 	
 	const exportColumns = cols.map ((col) => ({ title: col.header, dataKey: col.field }));
-	useEffect (() => {
-		ProductService.getProducts ().then ((data) => setProducts (data));
-	}, []); // eslint-disable-line react-hooks/exhaustive-deps
+	// useEffect (() => {
+	// 	ProductService.getProducts ().then ((data) => setProducts (data));
+	// }, []); // eslint-disable-line react-hooks/exhaustive-deps
 	const onGlobalFilterChange = (e) => {
 		const value = e.target.value;
 		let _filters = {...filters};
@@ -48,8 +50,8 @@ const CustomTable = () => {
 		import('jspdf').then ((jsPDF) => {
 			import('jspdf-autotable').then (() => {
 				const doc = new jsPDF.default (0, 0);
-				
-				doc.autoTable (exportColumns, products);
+				console.log(state);
+				doc.autoTable (exportColumns, state);
 				doc.save ('products.pdf');
 			});
 		});
@@ -113,8 +115,7 @@ const CustomTable = () => {
             </ol>
         ) : <span>{data.answer}</span>
     }
-
-	const { state } = useLocation();
+	
 
 	return (
 		
@@ -132,9 +133,9 @@ const CustomTable = () => {
 				filters={ filters }
 				header={ header }
 				globalFilterFields={[
-					'name',
-					'category',
-					'quantity'
+					'question',
+					'answer',
+					'type'
 				]}
 				tableStyle={{ minWidth: '50rem' }}
 			

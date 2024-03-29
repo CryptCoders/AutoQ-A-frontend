@@ -7,6 +7,7 @@ import { Tooltip } from 'primereact/tooltip';
 import { Tag } from 'primereact/tag';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 export default function TemplateDemo() {
     const toast = useRef(null);
@@ -14,6 +15,7 @@ export default function TemplateDemo() {
     const fileUploadRef = useRef(null);
     const [ file, setFile ] = useState(null);
     const navigate = useNavigate();
+    const [ isLoading, setIsLoading ] = useState(false);
     
     const onTemplateSelect = (e) => {
         let _totalSize = totalSize;
@@ -84,9 +86,9 @@ export default function TemplateDemo() {
     const emptyTemplate = () => {
         return (
             <div className="flex align-items-center flex-column">
-                <i className="pi pi-image mt-3 p-5" style={{ fontSize: '5em', borderRadius: '50%', backgroundColor: 'var(--surface-b)', color: 'var(--surface-d)' }}></i>
+                <i className="pi pi-file mt-3 p-5" style={{ fontSize: '5em', borderRadius: '50%', backgroundColor: 'var(--surface-b)', color: 'var(--surface-d)' }}></i>
                 <span style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }} className="my-5">
-                    Drag and Drop Image Here
+                    Drag and Drop File Here
                 </span>
             </div>
         );
@@ -99,6 +101,7 @@ export default function TemplateDemo() {
     const uploadPdf = async () => {
         const formData = new FormData();
         formData.append('file', file);
+        setIsLoading(true);
 
         const response = await axios.post('http://127.0.0.1:5000/generate-question-answer/10', formData, {
             headers: {
@@ -106,22 +109,49 @@ export default function TemplateDemo() {
             }
         });
 
-        console.log(response.data.data);
+        // console.log(response.data.data);
+        setIsLoading(false);
         return navigate('/qa', { state: response.data.data })
     }
 
     return (
-        <div className='centered-container'>
-            <Toast ref={toast}></Toast>
-
-            <Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
-            <Tooltip target=".custom-upload-btn" content="Upload" position="bottom" />
-            <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
-
-            <FileUpload ref={fileUploadRef} name="demo[]" url="./upload" customUpload uploadHandler={uploadPdf} accept="application/pdf" maxFileSize={1000000}
-                onUpload={onTemplateUpload} onSelect={onTemplateSelect} onError={onTemplateClear} onClear={onTemplateClear}
-                headerTemplate={headerTemplate} itemTemplate={itemTemplate} emptyTemplate={emptyTemplate}
-                chooseOptions={chooseOptions} uploadOptions={uploadOptions} cancelOptions={cancelOptions} />
-        </div>
+        <>
+            { !isLoading && (
+                <div className='centered-container'>
+                    <Toast ref={toast}></Toast>
+        
+                    <Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
+                    
+                    <Tooltip target=".custom-upload-btn" content="Upload" position="bottom" />
+                    <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
+        
+                    <FileUpload
+                        ref={fileUploadRef}
+                        name="text"
+                        customUpload
+                        uploadHandler={uploadPdf}
+                        accept={".pdf, .mp4"}
+                        maxFileSize={1000000}
+                        onUpload={onTemplateUpload}
+                        onSelect={onTemplateSelect}
+                        onError={onTemplateClear}
+                        onClear={onTemplateClear}
+                        headerTemplate={headerTemplate}
+                        itemTemplate={itemTemplate}
+                        emptyTemplate={emptyTemplate}
+                        chooseOptions={chooseOptions}
+                        uploadOptions={uploadOptions}
+                        cancelOptions={cancelOptions}
+                    />
+                </div>
+            )}
+        
+            { isLoading && (
+                <div className='centered-container'>
+                    <ProgressSpinner />
+                    <h2>We are generating questions for you! Don&apos;t leave us yet.</h2>
+                </div>
+            )}
+        </>
     );
 }
