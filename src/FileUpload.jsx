@@ -104,7 +104,7 @@ export default function TemplateDemo() {
         formData.append('file', file);
         setIsLoading(true);
 
-        const response = await axios.post('http://127.0.0.1:5000/generate-question-answer/10', formData, {
+        const response = await axios.post('http://127.0.0.1:5000/generate-brief-answer/1', formData, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
