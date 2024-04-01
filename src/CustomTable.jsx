@@ -2,7 +2,6 @@ import {Column} from 'primereact/column'
 import {DataTable} from 'primereact/datatable'
 import {Button} from 'primereact/button';
 import {Tooltip} from 'primereact/tooltip';
-import {ProductService} from './service/ProductService';
 import { useState, useEffect, useRef } from 'react';
 import {InputText} from 'primereact/inputtext';
 import { FilterMatchMode } from 'primereact/api';
@@ -11,23 +10,21 @@ import { useLocation } from 'react-router-dom';
 
 const CustomTable = () => {
 	const { state } = useLocation();
-	const [products, setProducts] = useState (state);
-	console.log(products);
+	const [products] = useState (state['questions']['question-answer']);
 	const dt = useRef (null);
 	// const [loading, setLoading] = useState (false);
 	const [filters, setFilters] = useState ({
 		global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 		question: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-		answer: { value: null, matchMode: FilterMatchMode.IN },
-		type: { value: null, matchMode: FilterMatchMode.EQUALS },
-		
+		answer: { value: null, matchMode: FilterMatchMode.IN }
 	});
+	
 	const [globalFilterValue, setGlobalFilterValue] = useState ('');
 	const cols = [
 		{ field: 'question', header: 'Questions' },
-		{ field: 'answer', header: 'Answers' },
-		{ field: 'type', header: 'Type' }
-	];
+		{ field: 'answer', header: 'Answers' }
+	]
+	// console.log(state)
 	
 	const exportColumns = cols.map ((col) => ({ title: col.header, dataKey: col.field }));
 	// useEffect (() => {
@@ -115,36 +112,37 @@ const CustomTable = () => {
             </ol>
         ) : <span>{data.answer}</span>
     }
-	
 
 	return (
 		
 		<div className="card">
 			<Tooltip target=".export-buttons>button" position="bottom"/>
 			
-			<DataTable
-				ref={ dt }
-				value={ state }
-				showGridlines
-				paginator
-				rows={ 5 }
-				rowsPerPageOptions={ [5, 10, 25, 50] }
-				dataKey="id"
-				filters={ filters }
-				header={ header }
-				globalFilterFields={[
-					'question',
-					'answer',
-					'type'
-				]}
-				tableStyle={{ minWidth: '50rem' }}
-			
-			>
-				<Column header="Sr No" headerStyle={{ width: '3rem' }} body={(data, options) => options.rowIndex + 1}></Column>
-				<Column field="question" header='Questions' body={(data) => data.question} />
-                <Column field="answer" header='Answers' body={(data) => ansTemplate(data)} />
-                <Column field="type" header='Type' body={(data) => data.type} />
-			</DataTable>
+			{ products && (
+				<DataTable
+					ref={ dt }
+					value={ products }
+					showGridlines
+					paginator
+					rows={ 5 }
+					rowsPerPageOptions={ [5, 10, 25, 50] }
+					dataKey="id"
+					filters={ filters }
+					header={ header }
+					globalFilterFields={[
+						'question',
+						'answer',
+						'type'
+					]}
+					tableStyle={{ minWidth: '50rem' }}
+				
+				>
+					<Column header="Sr No" headerStyle={{ width: '3rem' }} body={(data, options) => options.rowIndex + 1}></Column>
+					<Column field="question" header='Questions' body={(data) => data.question} />
+					<Column field="answer" header='Answers' body={(data) => ansTemplate(data)} />
+					{/*<Column field="type" header='Type' body={(data) => data.type} />*/}
+				</DataTable>
+				)}
 		</div>
 	);
 }
