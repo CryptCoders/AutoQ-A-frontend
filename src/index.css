@@ -76,3 +76,7 @@ body {
 .empty-container{
     font-weight: 500;
 }
+
+.custom-cancel-btn {
+    display: none !important;
+}

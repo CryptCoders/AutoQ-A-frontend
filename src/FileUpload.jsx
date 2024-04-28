@@ -1,13 +1,13 @@
 import { useRef, useState } from 'react';
 import { Toast } from 'primereact/toast';
 import { FileUpload } from 'primereact/fileupload';
-import { ProgressBar } from 'primereact/progressbar';
 import { Button } from 'primereact/button';
 import { Tooltip } from 'primereact/tooltip';
 import { Tag } from 'primereact/tag';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import TroubleshootOutlinedIcon from '@mui/icons-material/TroubleshootOutlined';
 
 export default function TemplateDemo() {
     const toast = useRef(null);
@@ -21,7 +21,6 @@ export default function TemplateDemo() {
         let _totalSize = totalSize;
         let files = e.files;
         setFile(e.files[0]);
-        console.log(e);
         // Object.keys(files).forEach((key) => {
         //     _totalSize += files[key].size || 0;
         // });
@@ -54,14 +53,13 @@ export default function TemplateDemo() {
         const value = totalSize / 10000;
         const formatedValue = (fileUploadRef && fileUploadRef.current) ?  fileUploadRef.current.formatSize(totalSize) : '0 B';
 
-
         return (
             <div className={className} style={{ backgroundColor: 'transparent', display: 'flex', alignItems: 'center' }}>
                 {chooseButton}
                 {uploadButton}
                 {cancelButton}
                 <div className="upoader-header flex align-items-center gap-3 ml-auto">
-                    <span>{formatedValue!='0 B'? formatedValue : ""}</span>
+                    <span>{formatedValue!=='0 B'? formatedValue : ""}</span>
                     {/* <ProgressBar value={value} showValue={false} style={{ width: '10rem', height: '12px' }}></ProgressBar> */}
                 </div>
             </div>
@@ -89,30 +87,52 @@ export default function TemplateDemo() {
             <div className="flex align-items-center flex-column">
                 <i className="pi pi-file mt-3 p-5" style={{ fontSize: '5em', borderRadius: '50%', backgroundColor: 'var(--surface-b)', color: 'var(--surface-d)' }}></i>
                 <span className="empty-container my-5" style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }}>
-                    Drag and Drop File Here
+                    Choose a .pdf or .mp4 file or drag and drop them here
                 </span>
             </div>
         );
     };
 
-    const chooseOptions = { icon: 'pi pi-fw pi-file-import', iconOnly: true, className: 'custom-choose-btn p-button-rounded p-button-outlined' };
-    const uploadOptions = { icon: 'pi pi-fw pi-cloud-upload', iconOnly: true, className: 'custom-upload-btn p-button-success p-button-rounded p-button-outlined' };
-    const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined' };
+    const chooseOptions = { icon: 'pi pi-fw pi-file', label: 'Choose', iconOnly: false, className: 'custom-choose-btn p-button-rounded p-button-outlined' };
+    const uploadOptions = { icon: <TroubleshootOutlinedIcon />, label: 'Analyze', iconOnly: false, className: 'custom-upload-btn p-button-success p-button-rounded p-button-outlined' };
+    const cancelOptions = { className: 'custom-cancel-btn' };
 
     const uploadPdf = async () => {
         const formData = new FormData();
         formData.append('file', file);
         setIsLoading(true);
 
-        const response = await axios.post('http://127.0.0.1:5000/generate-brief-answer/1', formData, {
+        const response1 = await axios.post('http://127.0.0.1:5000/generate-brief-answer/1', formData, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
         });
-
+        
+        const response2 = await axios.post('http://127.0.0.1:5000/generate-brief-answer/2', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
+        
+        const response3 = await axios.post('http://127.0.0.1:5000/generate-brief-answer/3', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
+        
+        const questions1 = response1.status === 200 ? response1.data.data.questions['question-answer'] : [];
+        const questions2 = response2.status === 200 ? response2.data.data.questions['question-answer'] : [];
+        const questions3 = response3.status === 200 ? response3.data.data.questions['question-answer'] : [];
+        const new_questions3 = [];
+        
+        for (const questions of questions3) {
+            if (questions.option.includes(questions.answer))
+                new_questions3.push(questions);
+        }
+        
         // console.log(response.data.data);
         setIsLoading(false);
-        return navigate('/qa', { state: response.data.data })
+        return navigate('/qa', { state: [ ...questions1, ...questions2, ...new_questions3 ] })
     }
 
     return (
