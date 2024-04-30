@@ -2,16 +2,26 @@ import {Column} from 'primereact/column'
 import {DataTable} from 'primereact/datatable'
 import {Button} from 'primereact/button';
 import {Tooltip} from 'primereact/tooltip';
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/InputText';
+import TextArea from '@mui/material/TextareaAutosize';
+import Typography from '@mui/material/Typography';
 import { useState, useEffect, useRef } from 'react';
-import {InputText} from 'primereact/inputtext';
 import { FilterMatchMode } from 'primereact/api';
 import { useLocation } from 'react-router-dom';
-// import axios from "axios";
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import axios from 'axios';
 
 const CustomTable = () => {
 	const { state } = useLocation();
-	const [products] = useState (state['questions']['question-answer']);
 	const dt = useRef (null);
+	const counter = useRef(0);
+	const [ visible, setVisible ] = useState(false);
+	const [ modalHeader, setModalHeader ] = useState("");
+	const [ modalContent, setModalContent ] = useState(<></>);
+	const [ checkAnswer, setCheckAnswer ] = useState([]);
+	const [ score, setScore ] = useState(undefined);
+	
 	// const [loading, setLoading] = useState (false);
 	const [filters, setFilters] = useState ({
 		global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -47,7 +57,6 @@ const CustomTable = () => {
 		import('jspdf').then ((jsPDF) => {
 			import('jspdf-autotable').then (() => {
 				const doc = new jsPDF.default (0, 0);
-				console.log(state);
 				doc.autoTable (exportColumns, state);
 				doc.save ('products.pdf');
 			});
@@ -87,7 +96,8 @@ const CustomTable = () => {
                 <i className="pi pi-search"/>
                 <InputText
                     value={globalFilterValue}
-                    onChange={onGlobalFilterChange} placeholder="Keyword Search" />
+                    onChange={onGlobalFilterChange} placeholder="Keyword Search" 
+				/>
             </span>
 
             <div className="flex align-items-center justify-content-end gap-2">
@@ -97,31 +107,170 @@ const CustomTable = () => {
             </div>
         </div>
     );
-
-	const ansTemplate = (data) => {
-
-        return typeof (data.answer) === 'object' ? (
-            <ol type='a'>
-                {data.answer.map((ans, index) => (
-                    <>
-                        <li key={index} style={ans.correct ? { fontWeight: 'bold', color: '#00A86B' } : {}}>{ans.answer}</li>
-                        <br />
-                    </>
-                ))
-                }
-            </ol>
-        ) : <span>{data.answer}</span>
-    }
-
-	return (
+	
+	const handleEvaluate = async () => {
+		setScore(undefined);
 		
+		const response = await axios.post('http://127.0.0.1:5000/evaluate-answer', {
+			desired_answer: checkAnswer[0],
+			user_answer: checkAnswer[1]
+		}, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+		
+		setScore(response?.data?.score);
+	};
+
+	const ansTemplate = (data) =>{
+		return typeof (data.option) === 'object' ? (
+			<div
+				style={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					flexWrap: 'wrap'
+				}}
+			>
+				<ol type='a' style={{ width: '70%' }}>
+					{data.option.map ((ans, index) => (
+						<>
+							<li
+								key={index}
+								style={{ color: '#000' }}
+								className={ data.answer === ans ? 'ans-effect' : '' }
+							>
+								{ ans }
+							</li>
+							<br/>
+						</>
+					))
+					}
+				</ol>
+				
+				<Button
+					style={{
+						textTransform: 'uppercase'
+					}}
+					onClick={() => {
+						setScore(undefined);
+						setCheckAnswer(['', '']);
+						setVisible(true);
+						setModalHeader("Check MCQ here");
+						setModalContent(
+							<ol type='a' style={{ width: '70%' }}>
+								{data.option.map ((ans, index) => (
+									<>
+										<li
+											key={index}
+											style={{ color: data.answer === ans ? '#2CC55E' : '#000' }}
+										>
+											{ ans }
+										</li>
+										<br/>
+									</>
+								))
+								}
+							</ol>
+						)
+					}}
+				>
+					✅
+					Check your answer
+				</Button>
+			</div>
+		) : (
+			<div
+				style={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					flexWrap: 'wrap'
+				}}
+			>
+				<span className='blur-effect' style={{ width: '70%' }}>
+					{ data.answer }
+				</span>
+				
+				<Button
+					onClick={() => {
+						setScore(undefined);
+						setCheckAnswer([data.answer, '']);
+						setVisible(true);
+						setModalHeader ("Check here");
+						setModalContent(
+							<div
+								style={{
+									display: 'flex',
+									flexDirection: 'column',
+									justifyContent: 'center',
+									alignItems: 'center'
+								}}
+							>
+								<TextArea
+									style={{
+										width: '60rem',
+										borderRadius: '5px',
+										fontSize: '1rem',
+										margin: '1rem',
+										border: '2px solid #6366F1',
+										padding: '1rem'
+									}}
+									minRows={ 9 }
+									placeholder={ "Write your answer here..." }
+									onChange={ (e) => { setCheckAnswer([data.answer, e.target.value]) } }
+								/>
+							</div>
+						)
+					}}
+				>
+					💪🏻
+					Try Yourself!
+				</Button>
+			</div>
+		)
+	}
+	
+	return (
 		<div className="card">
+			<Dialog
+				visible={ visible }
+				header={ modalHeader }
+				onHide={() => setVisible(false)}
+				style={{
+					minWidth: '50vw',
+				}}
+			>
+				{ modalContent }
+				
+				{
+					modalHeader === 'Check MCQ here' ? <></> : score === 0 || !isNaN(score) ? (
+						<Typography
+							variant="h5"
+							component="h5"
+							style={{
+								color: '#2CC55E'
+							}}
+						>
+							We have evaluated your answer to be: { score }/10
+						</Typography>
+					) : (
+						<Button
+							icon="pi pi-verified"
+							label="Evaluate"
+							onClick={ handleEvaluate }
+						/>
+					)
+				}
+			</Dialog>
+			
 			<Tooltip target=".export-buttons>button" position="bottom"/>
 			
-			{ products && (
+			{ state && (
 				<DataTable
 					ref={ dt }
-					value={ products }
+					value={ state }
 					showGridlines
 					paginator
 					rows={ 5 }
@@ -140,7 +289,6 @@ const CustomTable = () => {
 					<Column header="Sr No" headerStyle={{ width: '3rem' }} body={(data, options) => options.rowIndex + 1}></Column>
 					<Column field="question" header='Questions' body={(data) => data.question} />
 					<Column field="answer" header='Answers' body={(data) => ansTemplate(data)} />
-					{/*<Column field="type" header='Type' body={(data) => data.type} />*/}
 				</DataTable>
 				)}
 		</div>
