@@ -72,3 +72,7 @@
 .blur-effect:hover {
     filter: blur(0);
 }
+
+.p-datatable-tbody tr td:nth-child(2) {
+    width: 45rem !important;
+}
