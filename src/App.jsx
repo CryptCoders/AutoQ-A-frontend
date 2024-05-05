@@ -5,10 +5,14 @@ import FileUpload from './FileUpload';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import LandingPage from "./LandingPage.jsx";
 import Card from "./Card.jsx";
+import PaperFormat from "./PaperFormat.jsx";
+import {Pagination} from "@mui/material";
+import React from "react";
+import FormatSelector from "./FormatSelector.jsx";
 
 function App () {
 	return (
-		<>
+		<React.StrictMode>
 			
 			<BrowserRouter>
 				{/*<LandingPage/>*/}
@@ -18,9 +22,10 @@ function App () {
 					<Route exact path='/upload' element={<FileUpload/>} />
 					<Route exact path='/qa' element={<CustomTable/>} />
 					<Route exact path='/cards' element={<Card/>} />
+					<Route exact path='/p' element={<FormatSelector/>} />
 				</Routes>
 			</BrowserRouter>
-		</>
+		</React.StrictMode>
 	)
 }
 
