@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-import { useState, useEffect } from "react";
-import qa from "./assets/robot.png";
-import NavBar from "./NavBar.jsx";
-import Button from '@mui/material/Button';
-
-export default function LandingPage() {
-=======
 import qa from "./assets/robot.png";
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
@@ -14,7 +6,6 @@ export default function LandingPage() {
     const onStart=()=>{
         return navigate('/upload')
     }
->>>>>>> 413e129 (Deleted filenotupload)
     return (
         <>
             {/*<NavBar/>*/}
@@ -29,10 +20,7 @@ export default function LandingPage() {
                         
                         <Button
                             className="btn-explore"
-<<<<<<< HEAD
-=======
                             onClick={onStart}
->>>>>>> 413e129 (Deleted filenotupload)
                         >
                             Start now
                         </Button>
