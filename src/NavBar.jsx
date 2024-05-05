@@ -10,7 +10,7 @@ export default function NavBar () {
 		<div className='navbar'>
 				<div onClick={() => navigate('/')} className='logo-container-link' to="/" >
 					<div className='logo-container' >
-						< QuestionAnswerOutlinedIcon />
+						{/*< QuestionAnswerOutlinedIcon />*/}
 						<span>AutoQA</span>
 					</div>
 				</div>

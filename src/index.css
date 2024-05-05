@@ -31,10 +31,14 @@ body {
 
 .navbar{
     height: 55px;
-    background-color: #008ceb;
+    background-color: transparent;
+    position: relative;
     display: flex;
     /* text-align: center; */
     align-items: center;
+    z-index: 2;
+    /*background: linear-gradient(0deg, #F2F2F2 80%, transparent);*/
+
 
 }
 
@@ -44,16 +48,21 @@ body {
     /* text-align: center; */
     align-items: center;
     gap: 10px;
-    color: white;
+    background-image: linear-gradient(to right, #b8cbb8 0%, #b8cbb8 0%, #b465da 0%, #cf6cc9 33%, #ee609c 66%, #ee609c 100%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     text-decoration: none;
-
     
 }
 
 .logo-container span{
     padding: 0;
     margin: 0; 
-    color: white;
+    /*color: white;*/
+    /*background-image: radial-gradient( circle 325px at 19.2% 64.8%,  rgba(254,62,101,1) 9.7%, rgba(166,24,146,1) 91.3% );*/
+    background-image: linear-gradient(to right, #b8cbb8 0%, #b8cbb8 0%, #b465da 0%, #cf6cc9 33%, #ee609c 66%, #ee609c 100%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     font-size: 24px;
     font-weight: 600;
     text-decoration: none !important;
