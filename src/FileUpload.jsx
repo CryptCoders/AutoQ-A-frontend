@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Toast } from 'primereact/toast';
 import { FileUpload } from 'primereact/fileupload';
 import { Button } from 'primereact/button';
@@ -7,8 +7,8 @@ import { Tag } from 'primereact/tag';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ProgressSpinner } from 'primereact/progressspinner';
-import TroubleshootOutlinedIcon from '@mui/icons-material/TroubleshootOutlined';
-
+import TroubleshootOutlinedIcon from '@mui/icons-material/TroubleshootOutlined'
+import { ViewPdf } from './ViewPdf';
 export default function TemplateDemo() {
     const toast = useRef(null);
     const [totalSize, setTotalSize] = useState(0);
@@ -16,14 +16,10 @@ export default function TemplateDemo() {
     const [ file, setFile ] = useState(null);
     const navigate = useNavigate();
     const [ isLoading, setIsLoading ] = useState(false);
+    const[level,setLevel]=useState("1");
     
-    const onTemplateSelect = (e) => {
-        let _totalSize = totalSize;
-        let files = e.files;
+    const onTemplateSelect =async  (e) => {
         setFile(e.files[0]);
-        // Object.keys(files).forEach((key) => {
-        //     _totalSize += files[key].size || 0;
-        // });
         setTotalSize(e.files[0].size);
     };
 
@@ -42,10 +38,13 @@ export default function TemplateDemo() {
     const onTemplateRemove = (file, callback) => {
         setTotalSize(totalSize - file.size);
         callback();
+        setFile(null);
     };
 
     const onTemplateClear = () => {
+        setFile(null);
         setTotalSize(0);
+        
     };
 
     const headerTemplate = (options) => {
@@ -101,7 +100,7 @@ export default function TemplateDemo() {
         const formData = new FormData();
         formData.append('file', file);
         setIsLoading(true);
-
+        
         const response1 = await axios.post('http://127.0.0.1:5000/generate-brief-answer/1', formData, {
             headers: {
                 "Content-Type": "multipart/form-data"
@@ -130,7 +129,6 @@ export default function TemplateDemo() {
                 new_questions3.push(questions);
         }
         
-        // console.log(response.data.data);
         setIsLoading(false);
         return navigate('/qa', { state: [ ...questions1, ...questions2, ...new_questions3 ] })
     }
@@ -144,9 +142,9 @@ export default function TemplateDemo() {
                     <Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
                     <Tooltip target=".custom-upload-btn" content="Upload" position="bottom" />
                     <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
-
                     <FileUpload
                         className='file-upload-container'
+                        style={{ width: '75%', margin: '0 auto' ,marginBottom:'20px',border:'1px  solid black'}}
                         ref={fileUploadRef}
                         name="text"
                         customUpload
@@ -164,6 +162,17 @@ export default function TemplateDemo() {
                         uploadOptions={uploadOptions}
                         cancelOptions={cancelOptions}
                     />
+                    <div>
+                        {file?.type === 'application/pdf' && (
+                            <ViewPdf key={file.name} fileUrl={URL.createObjectURL(file)} />
+                        )}
+                        {file?.type === 'video/mp4' && (
+                            <video controls style={{ maxWidth: '50%', height: 'auto' }}>
+                                <source src={URL.createObjectURL(file)} type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video>
+                        )}
+                    </div>
                 </div>
             )}
 
