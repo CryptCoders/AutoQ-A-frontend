@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
 import qa from "./assets/robot.png";
-import NavBar from "./NavBar.jsx";
 import Button from '@mui/material/Button';
-
+import { useNavigate } from 'react-router-dom';
 export default function LandingPage() {
+    const navigate = useNavigate();
+    const onStart=()=>{
+        return navigate('/upload')
+    }
     return (
         <>
             {/*<NavBar/>*/}
@@ -18,6 +20,7 @@ export default function LandingPage() {
                         
                         <Button
                             className="btn-explore"
+                            onClick={onStart}
                         >
                             Start now
                         </Button>
