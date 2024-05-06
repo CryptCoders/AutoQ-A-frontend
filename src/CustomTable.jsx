@@ -237,7 +237,11 @@ const CustomTable = () => {
 			<Dialog
 				visible={ visible }
 				header={ modalHeader }
-				onHide={() => setVisible(false)}
+				onHide={() => {
+					setVisible(false);
+					setCheckAnswer([]);
+					setScore(undefined);
+				}}
 				style={{
 					minWidth: '50vw',
 				}}
