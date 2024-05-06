@@ -237,10 +237,6 @@ body {
     font-size: 1.2rem;
 }
 
-.custom-upload-btn {
-    display: none;
-}
-
 .paginator {
     background: transparent;
 }
@@ -287,11 +283,6 @@ body {
     align-items: end;
     /*border: 1px solid black;*/
 }
-
-.qa-format1-evaluate:hover {
-
-}
-
 
 .qa-format1-evaluate-icon:hover {
     /*color: #c00000;*/
