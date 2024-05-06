@@ -77,7 +77,7 @@ export default function TemplateDemo() {
         const formatedValue = (fileUploadRef && fileUploadRef.current) ?  fileUploadRef.current.formatSize(totalSize) : '0 B';
 
         return (
-            <div className={className} style={{ backgroundColor:'white', display: 'flex', alignItems: 'center' }}>
+            <div className={className} style={{ backgroundColor: 'white', display: 'flex', alignItems: 'center', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)' }}>
                 {chooseButton}
                 {uploadButton}
                 {cancelButton}
@@ -91,7 +91,7 @@ export default function TemplateDemo() {
 
     const itemTemplate = (file, props) => {
         return (
-            <div className="flex align-items-center flex-wrap">
+            <div className="flex align-items-center flex-wrap" style={{ boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)' }}>
                 <div className="flex align-items-center" style={{ width: '40%' }}>
                     <i className='pi pi-file-pdf' style={{ fontSize: '1.5rem' }} />
                     <span className="file-name flex flex-column text-left ml-3">
@@ -120,29 +120,43 @@ export default function TemplateDemo() {
     const uploadOptions = { icon: <TroubleshootOutlinedIcon />, label: 'Analyze', iconOnly: false, className: 'custom-upload-btn p-button-success p-button-rounded p-button-outlined' };
     const cancelOptions = { className: 'custom-cancel-btn' };
 
-    const uploadPdf = async () => {
+    const uploadPdf =  () => {
+        setVisible(true);
+        
+        // return navigate('/qa', { state: [ ...questions1, ...questions2, ...new_questions3 ] })
+    }
+    const handleSubmit=async ()=>{
+        setVisible(false);
+        setSelected(selected.map(() => false));
+        setIsLoading(true);
         const formData = new FormData();
         formData.append('file', file);
-        setVisible(true);
-        //setIsLoading(true);
+        let response1 ,response2,response3;
+        console.log("Selected",selected)
+        if(selected[0]==1){
+            console.log("remember called")
+            response1=await axios.post('http://127.0.0 .1:5000//generate-question-answers/remember', formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+        } 
+        if(selected[1]==1){
+            console.log("understand called")
+            response2 = await axios.post('http://127.0.0.1:5000//generate-question-answers/understand', formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+        }
+        if(selected[2]==1){
+            response3 = await axios.post('http://127.0.0.1:5000//generate-question-answers/apply', formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+        }
         
-        // const response1 = await axios.post('http://127.0.0.1:5000/generate-brief-answer/1', formData, {
-        //     headers: {
-        //         "Content-Type": "multipart/form-data"
-        //     }
-        // });
-        
-        // const response2 = await axios.post('http://127.0.0.1:5000/generate-brief-answer/2', formData, {
-        //     headers: {
-        //         "Content-Type": "multipart/form-data"
-        //     }
-        // });
-        
-        // const response3 = await axios.post('http://127.0.0.1:5000/generate-brief-answer/3', formData, {
-        //     headers: {
-        //         "Content-Type": "multipart/form-data"
-        //     }
-        // });
         
         // const questions1 = response1.status === 200 ? response1.data.data.questions['question-answer'] : [];
         // const questions2 = response2.status === 200 ? response2.data.data.questions['question-answer'] : [];
@@ -154,13 +168,7 @@ export default function TemplateDemo() {
         //         new_questions3.push(questions);
         // }
         
-        // setIsLoading(false);
-        // return navigate('/qa', { state: [ ...questions1, ...questions2, ...new_questions3 ] })
-    }
-    const handleSubmit=()=>{
-        console.log("Enter submit")
-        setVisible(false);
-        setSelected(selected.map(() => false));
+        setIsLoading(false);
         
     }
     const footerContent = (
@@ -169,7 +177,6 @@ export default function TemplateDemo() {
         </div>
     );
     const handleClick=(idx)=>{
-        console.log("Enter")
         const updatedState=selected;
         updatedState[idx]=!updatedState[idx]
         setSelected([...updatedState])
@@ -179,11 +186,11 @@ export default function TemplateDemo() {
         <>
             { !isLoading && (
                 <div style={{display:"flex" ,width:"100%",padding:"0.5rem 2rem" }} >
-                    <div className='centered-container' style={{ display: "flex", height: "auto", width: "30%" }}>
+                    <div className='centered-container' style={{ display: "flex", height: "auto", width: "50%" }}>
                         <FileUpload
                             className='file-upload-container'
                             ref={fileUploadRef}
-                            style={{ width: "100%", borderRadius: '8px', padding: '10px' }}
+                            style={{ width: file ? "100%" : "80%", borderRadius: '16px', padding: '10px', transition: file ? 'ease-in-out 1s' : 'none', boxShadow: '0px 0px 2px rgba(243, 142, 192,3)' }}
                             name="text"
                             customUpload
                             uploadHandler={uploadPdf}
@@ -201,13 +208,15 @@ export default function TemplateDemo() {
                             cancelOptions={cancelOptions}
                         />
                     </div>
+                    <div class="vertical-line" style={{
+                        borderLeft: '1px solid #B721FFF1', boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.5)', height:'80vh',marginLeft:'3rem'}}></div>
                         {file ?
-                                <div className="pdf-viewer-container" style={{ flex: 1, marginLeft: '20px' ,width:file?"65%":"50%"}}>
+                                <div className="pdf-viewer-container" style={{ flex: 1, marginLeft: '20px' ,width:file?"65%":"50%",transition:file?'ease-in-out 1s':'none'}}>
                                     {file?.type === 'application/pdf' && (
                                         <ViewPdf key={file.name} fileUrl={URL.createObjectURL(file)} />
                                     )}
                                     {file?.type === 'video/mp4' && (
-                                    <Card component="li" sx={{ minWidth: 300, minHeight:500,flexGrow: 1 }}>
+                                    <Card component="li" sx={{ minWidth: 800, minHeight:500,flexGrow: 1 }}>
                                         <CardCover>
                                             <video
                                                 autoPlay
@@ -234,16 +243,15 @@ export default function TemplateDemo() {
                 
                 </div>
             )}
-            <Dialog header="Select type of questions" headerStyle={{ color: '#B721FFF1' }} visible={visible} style={{ width: '80vw', height: '70vh' }} onHide={() => { setSelected(selected.map(() => false)); setVisible(false)}} footer={footerContent}>
+            <Dialog header="Select Question Types" headerStyle={{ color: '#B721FFF1' }} visible={visible} style={{ width: '80vw', height: '70vh' }} onHide={() => { setSelected(selected.map(() => false)); setVisible(false)}} footer={footerContent}>
                 <div style={{display:'flex',flexDirection:'row',justifyContent:"space-around", alignContent:'center',marginTop:'1rem'}}>
                     {questionTypes.map((card,idx)=>
                         
                         <Card sx={{
                              width:200,
                              height:200,
-
-                            maxWidth: 515, boxShadow: selected[idx] ? '0px 0px 8px 8px rgba(183, 33, 255, 0.7) ' : 'none',
-                            transition: 'box-shadow 0.3s ease-in-out'
+                            maxWidth: 515, boxShadow: selected[idx] ? '0px 0px 8px 8px rgba(183, 33, 255, 0.4) ' : '0px 0px 4px rgba(0, 0, 0, 0.3)',
+                            transition: 'box-shadow 0.3s ease-in-out',
                         }} onClick={()=>handleClick(idx)}>
                             <CardActionArea>
                                 <CardMedia
@@ -260,7 +268,6 @@ export default function TemplateDemo() {
                                         left:0,
                                         width: '100%',
                                         textAlign: 'center',
-                                        color: '#B721FF',
                                         fontWeight:550,
                                         padding:'8px',
                                         fontSize:'1.4rem'

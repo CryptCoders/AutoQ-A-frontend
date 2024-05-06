@@ -409,3 +409,18 @@ body {
 .check{
     background-color: #B721FFF1 !important;
 }
+/* Dialog */
+.p-dialog-title{
+    background: linear-gradient(81.02deg, #fa5560 -23.47%, #b14bf4 45.52%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size:large;
+    font-size:1.6rem;
+    padding:0.8rem;
+}
+.MuiTypography-root {
+      background: linear-gradient(81.02deg, #fa5560 -23.47%, #b14bf4 45.52%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+}
