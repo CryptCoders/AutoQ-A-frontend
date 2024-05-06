@@ -243,7 +243,7 @@ body {
 
 .qa-format1-container {
     width: 75%;
-    height: 68vh;
+    height: 69vh;
     margin: 0 auto;
     font-family: "Poppins", sans-serif;
     font-size: 1.2rem;
@@ -252,6 +252,7 @@ body {
 .qa-format1 {
     width: 100%;
     height: 95%;
+    padding-left: 0;
     overflow-y: scroll;
     /*padding: 1rem;*/
 }
@@ -284,14 +285,15 @@ body {
     /*border: 1px solid black;*/
 }
 
-.qa-format1-evaluate-icon:hover {
-    /*color: #c00000;*/
+.qa-format1-evaluate-btn {
     cursor: pointer;
-    border-radius: 5px;
-    /*box-shadow:  0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
-    /*color: #fff;*/
-    border: 2px solid black;
-    /*background: linear-gradient(81.02deg, #B14BF4 -39.48%, #4D91FF 130.8%) !important;*/
+    border-radius: 6px;
+    padding: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    color: #fff;
+    background: linear-gradient(81.02deg, #B14BF4 -39.48%, #4D91FF 130.8%) !important;
 }
 
 .qa-format1-answer {
@@ -364,26 +366,51 @@ body {
     margin: auto;
 }
 
-.p-button.p-highlight {
+.p-button.p-focus {
     background: linear-gradient(81.02deg, #B14BF4 -39.48%, #4D91FF 130.8%) !important;
+    color: #fff;
 }
 
-.p-button, .p-button.p-highlight:focus {
+.p-button, .p-button.p-focus:focus {
     box-shadow: none;
 }
 
 .question-type {
-    font-size: 2rem;
+    /*font-size: 2rem;*/
     width: 75%;
-    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1rem;
+
+}
+
+.question-type-header {
+    /*width: 20rem;*/
     background: linear-gradient(81.02deg, #fa5560 -23.47%, #b14bf4 45.52%);
-    /*font-size: 3rem;*/
     background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
+span.p-dropdown-label, .p-dropdown-item {
+    font-size: 1.2rem;
+}
+.p-dropdown:hover {
+    border: 1px solid #ced4da;
+}
+
+.p-dropdown:focus-visible {
+    /*border: none;*/
+    outline: none;
+}
 .modal-main-container {
     min-width: 50vw;
+    font-family: "Poppins", sans-serif;
+    border-radius: 3rem;
+}
+
+.p-dialog, .p-dialog-title, .p-dialog-header {
+    font-weight: 450 !important;
+    font-size: 1.3rem !important;
 }
 
 .modal-container {
@@ -391,19 +418,31 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin: 0;
+    height: 18rem;
 }
 
 .modal-answer {
     width: 60rem;
-    border-radius: 5px;
-    font-size: 1rem;
-    margin: 1rem;
-    border: 2px solid #6366F1;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    border: 1px solid #6366F1;
+    height: 17rem !important;
     padding: 1rem;
+    outline: none;
+    font-family: "Poppins", sans-serif !important;
+    resize: none;
 }
 
 .modal-evaluate-btn {
+    margin-top: 1rem;
     background: linear-gradient(81.02deg, #B14BF4 -39.48%, #4D91FF 130.8%) !important;
+    font-family: "Poppins", sans-serif !important;
+}
+
+.modal-evaluate-text {
+    margin-top: 1rem;
+    font-family: "Poppins", sans-serif !important;
 }
 
 .check{
@@ -424,3 +463,48 @@ body {
     -webkit-text-fill-color: transparent;
 
 }
+
+.toggle-btn-sub-container {
+    display: flex;
+    width: 75%;
+    margin: 0 auto;
+    /*border: 1px solid black;*/
+}
+
+.back-to-btn {
+    display: flex;
+    margin-top: auto;
+    margin-bottom: auto;
+    border-bottom: 2px solid #B14BF4;
+    border-radius: 4px;
+    /*color: #fff;*/
+    background: linear-gradient(81.02deg, #B14BF4 -39.48%, #4D91FF 130.8%);
+    /*background: linear-gradient(81.02deg, #fa5560 -23.47%, #b14bf4 45.52%);*/
+    /*font-size: 3rem;*/
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /*padding: 8px 9px 8px 8px;*/
+    /*border-radius: 7px;*/
+    /*font-family: "Inter var", sans-serif;*/
+
+}
+
+.back-to-icon {
+    color: #B14BF4;
+}
+
+.back-to-text {
+    margin-left: 2px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: underline !important;
+}
+
+.dropdown-option-btn {
+    width: 100%;
+}
+
+.p-dropdown {
+    box-shadow: none;
+}
+

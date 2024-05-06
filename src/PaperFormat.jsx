@@ -62,9 +62,9 @@ export default function PaperFormat() {
 										{first + idx + 1}. {qaPair.question}
 									</div>
 									<div className="qa-format1-evaluate">
-										<EditNoteOutlinedIcon
+										<button
 											fontSize="large"
-											className="qa-format1-evaluate-icon"
+											className="qa-format1-evaluate-btn"
 											onClick={() => {
 												setScore(0);
 												setCheckAnswer([qaPair.answer, '']);
@@ -82,7 +82,9 @@ export default function PaperFormat() {
 													</div>
 												)
 											}}
-										/>
+										>
+											Evaluate
+										</button>
 									</div>
 								</div>
 								<div className="qa-format1-answer">
@@ -176,10 +178,11 @@ export default function PaperFormat() {
 				{
 					score === undefined ? (
 						<Typography
+							className="modal-evaluate-text"
 							variant="h5"
 							component="h5"
 							style={{
-								color: '#2CC55E'
+								color: '#B14BF4'
 							}}
 						>
 							We have evaluated your answer to be: {score}/10

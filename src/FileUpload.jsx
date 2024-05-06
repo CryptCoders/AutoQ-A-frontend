@@ -133,9 +133,10 @@ export default function TemplateDemo() {
         formData.append('file', file);
         let response1 ,response2,response3;
         console.log("Selected",selected)
+        console.log(formData, file);
         if(selected[0]==1){
             console.log("remember called")
-            response1=await axios.post('http://127.0.0 .1:5000//generate-question-answers/remember', formData, {
+            response1=await axios.post('http://127.0.0.1:5000/generate-question-answers/remember', formData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
@@ -143,20 +144,20 @@ export default function TemplateDemo() {
         } 
         if(selected[1]==1){
             console.log("understand called")
-            response2 = await axios.post('http://127.0.0.1:5000//generate-question-answers/understand', formData, {
+            response2 = await axios.post('http://127.0.0.1:5000/generate-question-answers/understand', formData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
             });
         }
         if(selected[2]==1){
-            response3 = await axios.post('http://127.0.0.1:5000//generate-question-answers/apply', formData, {
+            response3 = await axios.post('http://127.0.0.1:5000/generate-question-answers/apply', formData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
             });
         }
-        
+        console.log(response1);
         
         // const questions1 = response1.status === 200 ? response1.data.data.questions['question-answer'] : [];
         // const questions2 = response2.status === 200 ? response2.data.data.questions['question-answer'] : [];
@@ -167,8 +168,21 @@ export default function TemplateDemo() {
         //     if (questions.option.includes(questions.answer))
         //         new_questions3.push(questions);
         // }
-        
+        let qa={};
+        if(response1){
+                qa['remember']=response1.data;
+        }
+        if(response2){
+            qa['understand']=response2.data;
+        }
+        if(response3){
+            qa['apply']=response3.data;
+        }
+        console.log("qa",qa)
         setIsLoading(false);
+        return navigate('/p', qa)
+        
+        
         
     }
     const footerContent = (
