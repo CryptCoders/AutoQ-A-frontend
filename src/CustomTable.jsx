@@ -174,7 +174,7 @@ const CustomTable = ({ qaData }) => {
 	}
 	
 	return (
-		<div className="card">
+		<div className="card" style={{ background: 'transparent'}}>
 			<Dialog
 				className="modal-main-container"
 				visible={ visible }
@@ -217,6 +217,7 @@ const CustomTable = ({ qaData }) => {
 			
 			{ qaData && Object.keys(qaData).length ? (
 				<DataTable
+					style={{ background: 'transparent !important'}}
 					ref={ dt }
 					value={ qaData }
 					showGridlines
