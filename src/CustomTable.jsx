@@ -3,13 +3,12 @@ import {DataTable} from 'primereact/datatable'
 import {Button} from 'primereact/button';
 import {Tooltip} from 'primereact/tooltip';
 import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/InputText';
+import { InputText } from 'primereact/inputtext';
 import TextArea from '@mui/material/TextareaAutosize';
 import Typography from '@mui/material/Typography';
 import { useState, useEffect, useRef } from 'react';
 import { FilterMatchMode } from 'primereact/api';
 import { useLocation } from 'react-router-dom';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import axios from 'axios';
 
 const CustomTable = () => {

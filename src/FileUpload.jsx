@@ -3,7 +3,6 @@ import { FileUpload } from 'primereact/fileupload';
 import { Button } from 'primereact/button';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import TroubleshootOutlinedIcon from '@mui/icons-material/TroubleshootOutlined'
 import { ViewPdf } from './ViewPdf';
 import fileUploadGif from './assets/fileupload.gif';
@@ -17,7 +16,7 @@ import { CardActionArea } from '@mui/material';
 import L1 from './assets/recall.gif'
 import L2 from './assets/understand.gif'
 import L3 from './assets/apply.gif'
-
+import Loading from './assets/loading.gif'
 export default function TemplateDemo() {
     const toast = useRef(null);
     const [visible, setVisible] = useState(false);
@@ -302,9 +301,13 @@ export default function TemplateDemo() {
             </Dialog>
             { isLoading && (
                 <div className='centered-container'>
-                    <ProgressSpinner />
-                    <h2>We are generating questions for you! Don&apos;t leave us yet.</h2>
-                </div>
+                    <div className="centered-container" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: "100%",height:"80vh" }}>
+                        <img src={Loading} width="545px" />
+                        <span className="empty-container my-5" style={{ fontSize: '1.8rem', color: 'var(--text-color-secondary)' }}>
+                            We are generating questions for you! Don&apos;t leave us yet.
+                        </span>
+                    </div>
+               </div>
             )}
         </>
     );
