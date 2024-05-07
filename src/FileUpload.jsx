@@ -169,14 +169,26 @@ export default function TemplateDemo() {
         //         new_questions3.push(questions);
         // }
         let qa={};
+
         if(response1){
             qa['remember']=response1.data;
         }
+        else {
+            qa['remember'] = {}
+        }
+
         if(response2){
             qa['understand']=response2.data;
         }
+        else {
+            qa['understand'] = {}
+        }
+
         if(response3){
             qa['apply']=response3.data;
+        }
+        else {
+            qa['apply'] = {};
         }
 
         setIsLoading(false);

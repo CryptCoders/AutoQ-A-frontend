@@ -10,12 +10,12 @@ export default function FormatSelector() {
 	const options = ["Plain", "Table"];
 	const levelOptions = [
 		{
-			"level": "understand",
-			"header": "Understand Level Questions"
-		},
-		{
 			"level": "remember",
 			"header": "Remember Level Questions"
+		},
+		{
+			"level": "understand",
+			"header": "Understand Level Questions"
 		},
 		{
 			"level": "apply",
@@ -58,7 +58,8 @@ export default function FormatSelector() {
 						placeholder="Select a Level"
 					/>
 				</div>
-				{ value === "Plain" ? <PaperFormat/> : <CustomTable/>}
+
+				{ value === "Plain" ? <PaperFormat selectedLevel={ selectedLevel.level } /> : <CustomTable />}
 			</div>
 		</div>
 	);
