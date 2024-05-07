@@ -1,18 +1,20 @@
-import { QAdata} from "./service/QAdata.js";
-import { useState, useRef } from "react";
+import { useState, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Paginator } from 'primereact/paginator';
 import { Divider } from 'primereact/divider';
 import { Accordion, AccordionTab } from 'primereact/accordion';
 import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
-import Typography from "@mui/material/Typography";
-import {Button} from "primereact/button";
-import {Dialog} from "primereact/dialog";
-import TextArea from "@mui/material/TextareaAutosize";
+import Typography from '@mui/material/Typography';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import TextArea from '@mui/material/TextareaAutosize';
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
-import Highlighter from "react-highlight-words";
+import Highlighter from 'react-highlight-words';
 import { Toast } from 'primereact/toast';
-import axios from "axios";
-import _ from "lodash";
+import axios from 'axios';
+import _ from 'lodash';
+
+import { QAdata } from "./service/QAdata.js";
 
 export default function PaperFormat() {
 	const [first, setFirst] = useState(0);
@@ -23,12 +25,13 @@ export default function PaperFormat() {
 	const [ checkAnswer, setCheckAnswer ] = useState([]);
 	const [score, setScore] = useState(undefined);
 	const [copy, setCopy] = useState(false);
-	
 	const [highlight, setHighlight] = useState([]);
-	
+
+	const { state } = useLocation();
 	const toast = useRef(null);
-	const data = QAdata.getData();
-	
+	// const data = QAdata.getData();
+	const data = state.apply.data;
+
 	const handleEvaluate = async () => {
 		setScore(0);
 		
@@ -36,10 +39,10 @@ export default function PaperFormat() {
 			desired_answer: checkAnswer[0],
 			user_answer: checkAnswer[1]
 		}, {
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
+			headers: {
+			"Content-Type": "application/json"
+			}
+		});
 		
 		setScore(response?.data?.score);
 	};
@@ -47,10 +50,19 @@ export default function PaperFormat() {
 	const showCopied = () => {
 		toast.current.show({ severity: 'info', summary: 'Success', detail: 'Content Copied!' });
 	}
-	
-	
+
+	const formatQuestion = (question) => {
+		question = question.replaceAll(/\*\*[a-zA-Z]*:\*\*/g, "");
+		question = question.replaceAll(/[0-9]*\./g, "");
+		return question;
+	};
+
+	const formatAnswer = (answer) => {
+		answer = answer.replaceAll(/\*\*(.*?)\*\*/g, "$1");
+		return answer;
+	};
+
 	return (
-		
 		<div className="qa-format1-container">
 			<ul className="qa-format1">
 				{
@@ -59,11 +71,11 @@ export default function PaperFormat() {
 							<li className="qa-format1-list" key={first + idx}>
 								<div className="qa-format-question-container">
 									<div className="qa-format1-question">
-										{first + idx + 1}. {qaPair.question}
+										{first + idx + 1}. {formatQuestion(qaPair.question)}
 									</div>
+
 									<div className="qa-format1-evaluate">
 										<button
-											fontSize="large"
 											className="qa-format1-evaluate-btn"
 											onClick={() => {
 												setScore(0);
@@ -87,13 +99,15 @@ export default function PaperFormat() {
 										</button>
 									</div>
 								</div>
+
 								<div className="qa-format1-answer">
 									<span style={{fontWeight: 600}}>Answer: </span>
 									<Highlighter
 										key={first + idx}
 										searchWords={ highlight.includes(first + idx) ? qaPair.keywords : [] }
-										textToHighlight={qaPair.answer}
+										textToHighlight={formatAnswer(qaPair.answer)}
 									/>
+
 									{/*<span>{qaPair.answer}</span>*/}
 									<div
 										className="qa-format1-copy"
@@ -111,38 +125,35 @@ export default function PaperFormat() {
 										{/*<div className={ copy ? "tooltip-copy" : "tooltip-not-copy" }>Copied!</div>*/}
 									</div>
 								</div>
-								
-								<Accordion
-									key={first + idx}
-									multiple={true}
-									// activeIndex={
-									// 	highlight.filter((ele) => _.range(first, first + rows).includes(ele)).map(item => {
-									// 		item % rows
-									// 	})
-									// 	}
-								>
-									
-									<AccordionTab
+
+								{ qaPair.keywords && (
+									<Accordion
 										key={first + idx}
-										className="accordion-tab"
-										header="Keywords"
-										onClick={(e) => {
-											highlight.includes(first + idx) ?
-												setHighlight(highlight.filter(ele => ele !== first + idx)):
-												setHighlight([...highlight, first + idx])
-										}}
+										multiple={true}
 									>
-										<ul className="qa-format1-keyword">
-											{
-												qaPair.keywords.map((keyword, idx) => {
-													return (
-														<li className="qa-format1-keyword-li" key={idx}>{keyword}</li>
-													)
-												})
-											}
-										</ul>
-									</AccordionTab>
-								</Accordion>
+
+										<AccordionTab
+											key={first + idx}
+											className="accordion-tab"
+											header="Keywords"
+											onClick={(e) => {
+												highlight.includes(first + idx) ?
+													setHighlight(highlight.filter(ele => ele !== first + idx)):
+													setHighlight([...highlight, first + idx])
+											}}
+										>
+											<ul className="qa-format1-keyword">
+												{
+													qaPair.keywords.map((keyword, idx) => {
+														return (
+															<li className="qa-format1-keyword-li" key={idx}>{keyword}</li>
+														)
+													})
+												}
+											</ul>
+										</AccordionTab>
+									</Accordion>
+								)}
 								<Divider/>
 							</li>
 						)
