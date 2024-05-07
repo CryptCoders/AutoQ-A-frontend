@@ -210,11 +210,11 @@ export default function TemplateDemo() {
         <>
             { !isLoading && (
                 <div style={{display:"flex" ,width:"100%",padding:"0.5rem 2rem" }} >
-                    <div className='centered-container' style={{ display: "flex", height: "auto", width: "50%" }}>
+                    <div className='centered-container' style={{ display: "flex", height: "auto", width: file?"40%":"50%" }}>
                         <FileUpload
                             className='file-upload-container'
                             ref={fileUploadRef}
-                            style={{  width: "80%", borderRadius: '16px', padding: '10px', transition: file ? 'ease-in-out 1s' : 'none' }}
+                            style={{  width: file?"100%":"80%", borderRadius: '16px', padding: '10px', transition: file ? 'ease-in-out 1s' : 'none' }}
                             name="text"
                             customUpload
                             uploadHandler={uploadPdf}
@@ -235,7 +235,7 @@ export default function TemplateDemo() {
                     <div className="vertical-line" style={{
                         borderLeft: '1px solid #B721FFF1', boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.5)', height:'80vh',marginLeft:'3rem'}}></div>
                         {file ?
-                                <div className="pdf-viewer-container" style={{ flex: 1, marginLeft: '20px' ,width: "40%",transition:file?'ease-in-out 1s':'none'}}>
+                                <div className="pdf-viewer-container" style={{ flex: 1, marginLeft: '20px' ,width: "65%",transition:file?'ease-in-out 1s':'none'}}>
                                     {file?.type === 'application/pdf' && (
                                         <ViewPdf key={file.name} fileUrl={URL.createObjectURL(file)} />
                                     )}
