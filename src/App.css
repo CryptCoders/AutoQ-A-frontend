@@ -366,12 +366,13 @@ body {
     margin: auto;
 }
 
-.p-button.p-focus {
+.toggle-btn .p-disabled {
     background: linear-gradient(81.02deg, #B14BF4 -39.48%, #4D91FF 130.8%) !important;
     color: #fff;
+    opacity: 1;
 }
 
-.p-button, .p-button.p-focus:focus {
+.p-button, :focus {
     box-shadow: none;
 }
 
@@ -408,9 +409,11 @@ span.p-dropdown-label, .p-dropdown-item {
     border-radius: 3rem;
 }
 
-.p-dialog, .p-dialog-title, .p-dialog-header {
+.modal-main-container .p-dialog-title {
     font-weight: 450 !important;
     font-size: 1.3rem !important;
+    padding: 0;
+    color: black;
 }
 
 .modal-container {
@@ -448,17 +451,28 @@ span.p-dropdown-label, .p-dropdown-item {
 .check{
     background-color: #B721FFF1 !important;
 }
+
+.modal-main-container {
+    width: 80vw;
+    height: 70vh;
+}
+
+.modal-qa-selection {
+    width: 60vw;
+    height: 60vh;
+}
+
 /* Dialog */
-.p-dialog-title{
+.modal-qa-selection .p-dialog-title{
     background: linear-gradient(81.02deg, #fa5560 -23.47%, #b14bf4 45.52%);
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-size:large;
     font-size:1.6rem;
     padding:0.8rem;
 }
+
 .MuiTypography-root {
-      background: linear-gradient(81.02deg, #fa5560 -23.47%, #b14bf4 45.52%);
+    background: linear-gradient(81.02deg, #fa5560 -23.47%, #b14bf4 45.52%);
     background-clip: text;
     -webkit-text-fill-color: transparent;
 
@@ -468,7 +482,6 @@ span.p-dropdown-label, .p-dropdown-item {
     display: flex;
     width: 75%;
     margin: 0 auto;
-    /*border: 1px solid black;*/
 }
 
 .back-to-btn {
@@ -479,13 +492,8 @@ span.p-dropdown-label, .p-dropdown-item {
     border-radius: 4px;
     /*color: #fff;*/
     background: linear-gradient(81.02deg, #B14BF4 -39.48%, #4D91FF 130.8%);
-    /*background: linear-gradient(81.02deg, #fa5560 -23.47%, #b14bf4 45.52%);*/
-    /*font-size: 3rem;*/
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    /*padding: 8px 9px 8px 8px;*/
-    /*border-radius: 7px;*/
-    /*font-family: "Inter var", sans-serif;*/
 
 }
 
@@ -508,3 +516,48 @@ span.p-dropdown-label, .p-dropdown-item {
     box-shadow: none;
 }
 
+.notfound {
+    display: flex;
+    margin: auto;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+    height: 68vh;
+    /*border: 1px solid black;*/
+}
+
+.empty-container {
+    font-size: 1.5rem;
+    color: #36454F;
+}
+
+.header-template-box {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.centered-sub-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 80vh;
+}
+
+.card-main-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-content: center;
+    margin-top: 1rem;
+}
+
+.vertical-line {
+    border-left: 1px solid #B721FFF1;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    height:80vh;
+    margin-left: 3rem;
+}

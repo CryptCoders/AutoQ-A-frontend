@@ -10,9 +10,11 @@ import { useState, useEffect, useRef } from 'react';
 import { FilterMatchMode } from 'primereact/api';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import NotFound from "./NotFound.jsx";
+import { formatQuestion, formatAnswer } from "./service/format.js";
 
-const CustomTable = () => {
-	const { state } = useLocation();
+const CustomTable = ({ qaData }) => {
+	console.log(qaData)
 	const dt = useRef (null);
 	const counter = useRef(0);
 	const [ visible, setVisible ] = useState(false);
@@ -21,7 +23,6 @@ const CustomTable = () => {
 	const [ checkAnswer, setCheckAnswer ] = useState([]);
 	const [ score, setScore ] = useState(undefined);
 	
-	// const [loading, setLoading] = useState (false);
 	const [filters, setFilters] = useState ({
 		global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 		question: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -33,12 +34,9 @@ const CustomTable = () => {
 		{ field: 'question', header: 'Questions' },
 		{ field: 'answer', header: 'Answers' }
 	]
-	// console.log(state)
 	
-	const exportColumns = cols.map ((col) => ({ title: col.header, dataKey: col.field }));
-	// useEffect (() => {
-	// 	ProductService.getProducts ().then ((data) => setProducts (data));
-	// }, []); // eslint-disable-line react-hooks/exhaustive-deps
+	const exportColumns = cols.map ((col) => ({title: col.header, dataKey: col.field}));
+	
 	const onGlobalFilterChange = (e) => {
 		const value = e.target.value;
 		let _filters = {...filters};
@@ -56,22 +54,22 @@ const CustomTable = () => {
 		import('jspdf').then ((jsPDF) => {
 			import('jspdf-autotable').then (() => {
 				const doc = new jsPDF.default (0, 0);
-				doc.autoTable (exportColumns, state);
-				doc.save ('products.pdf');
+				doc.autoTable(exportColumns, qaData);
+				doc.save ('question-answer');
 			});
 		});
 	};
 	
 	const exportExcel = () => {
 		import('xlsx').then ((xlsx) => {
-			const worksheet = xlsx.utils.json_to_sheet (products);
+			const worksheet = xlsx.utils.json_to_sheet (qaData);
 			const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
 			const excelBuffer = xlsx.write (workbook, {
 				bookType: 'xlsx',
 				type: 'array'
 			});
 			
-			saveAsExcelFile (excelBuffer, 'products');
+			saveAsExcelFile (excelBuffer, 'question-answer');
 		});
 	};
 	
@@ -123,63 +121,7 @@ const CustomTable = () => {
 	};
 
 	const ansTemplate = (data) =>{
-		return typeof (data.option) === 'object' ? (
-			<div
-				style={{
-					display: 'flex',
-					justifyContent: 'space-between',
-					alignItems: 'center',
-					flexWrap: 'wrap'
-				}}
-			>
-				<ol type='a' style={{ width: '70%' }}>
-					{data.option.map ((ans, index) => (
-						<>
-							<li
-								key={index}
-								style={{ color: '#000' }}
-								className={ data.answer === ans ? 'ans-effect' : '' }
-							>
-								{ ans }
-							</li>
-							<br/>
-						</>
-					))
-					}
-				</ol>
-				
-				<Button
-					style={{
-						textTransform: 'uppercase'
-					}}
-					onClick={() => {
-						setScore(undefined);
-						setCheckAnswer(['', '']);
-						setVisible(true);
-						setModalHeader("Check MCQ here");
-						setModalContent(
-							<ol type='a' style={{ width: '70%' }}>
-								{data.option.map ((ans, index) => (
-									<>
-										<li
-											key={index}
-											style={{ color: data.answer === ans ? '#2CC55E' : '#000' }}
-										>
-											{ ans }
-										</li>
-										<br/>
-									</>
-								))
-								}
-							</ol>
-						)
-					}}
-				>
-					✅
-					Check your answer
-				</Button>
-			</div>
-		) : (
+		return (
 			<div
 				style={{
 					display: 'flex',
@@ -234,6 +176,7 @@ const CustomTable = () => {
 	return (
 		<div className="card">
 			<Dialog
+				className="modal-main-container"
 				visible={ visible }
 				header={ modalHeader }
 				onHide={() => {
@@ -250,16 +193,18 @@ const CustomTable = () => {
 				{
 					modalHeader === 'Check MCQ here' ? <></> : score === 0 || !isNaN(score) ? (
 						<Typography
+							className="modal-evaluate-text"
 							variant="h5"
 							component="h5"
 							style={{
-								color: '#2CC55E'
+								color: '#B14BF4'
 							}}
 						>
 							We have evaluated your answer to be: { score }/10
 						</Typography>
 					) : (
 						<Button
+							className="modal-evaluate-btn"
 							icon="pi pi-verified"
 							label="Evaluate"
 							onClick={ handleEvaluate }
@@ -270,10 +215,10 @@ const CustomTable = () => {
 			
 			<Tooltip target=".export-buttons>button" position="bottom"/>
 			
-			{ state && (
+			{ qaData && Object.keys(qaData).length ? (
 				<DataTable
 					ref={ dt }
-					value={ state }
+					value={ qaData }
 					showGridlines
 					paginator
 					rows={ 5 }
@@ -290,10 +235,11 @@ const CustomTable = () => {
 				
 				>
 					<Column header="Sr No" headerStyle={{ width: '3rem' }} body={(data, options) => options.rowIndex + 1}></Column>
-					<Column field="question" header='Questions' body={(data) => data.question} />
+					<Column field="question" header='Questions' body={(data) => formatQuestion(data.question)} />
 					<Column field="answer" header='Answers' body={(data) => ansTemplate(data)} />
 				</DataTable>
-				)}
+				): <NotFound/>
+			}
 		</div>
 	);
 }

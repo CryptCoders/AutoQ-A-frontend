@@ -1,28 +1,26 @@
 import { SelectButton } from 'primereact/selectbutton';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import PaperFormat from "./PaperFormat.jsx";
 import CustomTable from "./CustomTable.jsx";
 import ReplyRoundedIcon from '@mui/icons-material/ReplyRounded';
 import { Dropdown } from 'primereact/dropdown';
 
 export default function FormatSelector() {
-	const options = ["Plain", "Table"];
-	const levelOptions = [
-		{
-			"level": "remember",
-			"header": "Remember Level Questions"
-		},
-		{
-			"level": "understand",
-			"header": "Understand Level Questions"
-		},
-		{
-			"level": "apply",
-			"header": "Apply Level Questions"
-		}];
+	const options = ["Paper" , "Table"];
+	const { state } = useLocation();
+	const levelOptions = [];
 	
+	for (let key in state) {
+		levelOptions.push({
+			"level": key,
+			"header": key.charAt(0).toUpperCase() + key.slice(1) + " Level Questions"
+		})
+	}
+	
+	console.log(levelOptions)
 	const [selectedLevel, setSelectedLevel] = useState(levelOptions[0]);
+	console.log(selectedLevel, state[selectedLevel.level].data);
 	const [value, setValue] = useState(options[0]);
 	const navigate = useNavigate();
 
@@ -36,12 +34,14 @@ export default function FormatSelector() {
 				
 				<SelectButton
 					className="toggle-btn"
-					values={value}
-					onChange={(e) => {
-						setValue(e.value);
-					}}
+					value={value}
 					options={options}
-					optionDisabled={value}
+					// optionValue={value}
+					// optionLabel="name"
+					optionDisabled={(option) => option === value}
+					onChange={(e) => {
+						setValue(e.value)
+					}}
 				/>
 			</div>
 			
@@ -58,8 +58,11 @@ export default function FormatSelector() {
 						placeholder="Select a Level"
 					/>
 				</div>
-
-				{ value === "Plain" ? <PaperFormat selectedLevel={ selectedLevel.level } /> : <CustomTable />}
+				
+				{ value === "Paper" ?
+					<PaperFormat qaData={state[selectedLevel.level].data}/> :
+					<CustomTable qaData={state[selectedLevel.level].data}/>
+				}
 			</div>
 		</div>
 	);

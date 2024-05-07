@@ -1,4 +1,4 @@
-import {useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { FileUpload } from 'primereact/fileupload';
 import { Button } from 'primereact/button';
 import axios from 'axios';
@@ -17,16 +17,17 @@ import L1 from './assets/recall.gif'
 import L2 from './assets/understand.gif'
 import L3 from './assets/apply.gif'
 import Loading from './assets/loading.gif'
+
 export default function TemplateDemo() {
     const toast = useRef(null);
+    const navigate = useNavigate();
     const [visible, setVisible] = useState(false);
     const [totalSize, setTotalSize] = useState(0);
     const fileUploadRef = useRef(null);
     const [ file, setFile ] = useState(null);
-    const navigate = useNavigate();
     const [selected,setSelected]=useState([false,false,false])
     const [ isLoading, setIsLoading ] = useState(false);
-    const[questions,setQuestions]=useState(null);
+    const[questions,setQuestions] = useState(null);
 
     const questionTypes= [
         { name: 'Recall', code: '1', img: L1},
@@ -78,13 +79,12 @@ export default function TemplateDemo() {
         const formatedValue = (fileUploadRef && fileUploadRef.current) ?  fileUploadRef.current.formatSize(totalSize) : '0 B';
 
         return (
-            <div className={className} style={{ backgroundColor: 'white', display: 'flex', alignItems: 'center', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)' }}>
+            <div className={className + " header-template-box"}>
                 {chooseButton}
                 {uploadButton}
                 {cancelButton}
-                <div className="upoader-header flex align-items-center gap-3 ml-auto">
+                <div>
                     <span>{formatedValue!=='0 B'? formatedValue : ""}</span>
-                    {/* <ProgressBar value={value} showValue={false} style={{ width: '10rem', height: '12px' }}></ProgressBar> */}
                 </div>
             </div>
         );
@@ -92,15 +92,18 @@ export default function TemplateDemo() {
 
     const itemTemplate = (file, props) => {
         return (
-            <div className="flex align-items-center flex-wrap" style={{ boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)' }}>
-                <div className="flex align-items-center" style={{ width: '40%' }}>
-                    <i className='pi pi-file-pdf' style={{ fontSize: '1.5rem' }} />
-                    <span className="file-name flex flex-column text-left ml-3">
+            <div style={{ boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)' }}>
+                <div style={{ width: '40%' }}>
+                    <i style={{ fontSize: '1.5rem' }} />
+                    <span className="file-name">
                         {truncateFilename(file.name,21)}
-                        <small>{new Date().toLocaleDateString()}</small>
+                        <small>{" " + new Date().toLocaleDateString()}</small>
                     </span>
                 </div>
-                <Button type="button" icon="pi pi-times" className="p-button-outlined p-button-rounded p-button-danger ml-auto" onClick={() => onTemplateRemove(file, props.onRemove)} />
+                <Button
+                    type="button"
+                    icon="pi pi-times"
+                    onClick={() => onTemplateRemove(file, props.onRemove)} />
             </div>
         );
     };
@@ -108,9 +111,8 @@ export default function TemplateDemo() {
     const emptyTemplate = () => {
         return (
             <div className="flex align-items-center flex-column">
-                {/* <i className="pi pi-file mt-3 p-5" style={{ fontSize: '5em', borderRadius: '50%', backgroundColor: 'var(--surface-b)', color: 'var(--surface-d)' }}></i> */}
                 <img src={fileUploadGif} style={{width:"12rem"}} alt={"File upload"} />
-                <span className="empty-container my-5" style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }}>
+                <span className="empty-container" style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }}>
                     Choose a PDF or video file 
                 </span>
             </div>
@@ -123,8 +125,6 @@ export default function TemplateDemo() {
 
     const uploadPdf =  () => {
         setVisible(true);
-        
-        // return navigate('/qa', { state: [ ...questions1, ...questions2, ...new_questions3 ] })
     }
     const handleSubmit=async ()=>{
         setVisible(false);
@@ -157,46 +157,43 @@ export default function TemplateDemo() {
                 }
             });
         }
-
-        // const questions1 = response1.status === 200 ? response1.data.data.questions['question-answer'] : [];
-        // const questions2 = response2.status === 200 ? response2.data.data.questions['question-answer'] : [];
-        // const questions3 = response3.status === 200 ? response3.data.data.questions['question-answer'] : [];
-        // const new_questions3 = [];
         
-        // for (const questions of questions3) {
-        //     if (questions.option.includes(questions.answer))
-        //         new_questions3.push(questions);
-        // }
         let qa={};
 
         if(response1){
-            qa['remember']=response1.data;
+            qa['remember'] = response1.data;
         }
-        else {
+        else{
             qa['remember'] = {}
         }
 
         if(response2){
-            qa['understand']=response2.data;
+            qa['understand'] = response2.data;
         }
-        else {
+        else{
             qa['understand'] = {}
         }
 
         if(response3){
-            qa['apply']=response3.data;
+            qa['apply'] = response3.data;
         }
-        else {
-            qa['apply'] = {};
+        else{
+            qa['apply'] = {}
         }
-
+        
         setIsLoading(false);
-        return navigate('/p', { state: qa });
+        return navigate('/display', { state: qa });
     }
 
     const footerContent = (
         <div>
-            <Button className="check" label="Submit" icon="pi pi-check" onClick={handleSubmit} autoFocus style={{ background:'#B721FF!important'}} />
+            <Button
+                className="check"
+                label="Submit"
+                icon="pi pi-check"
+                onClick={handleSubmit}
+                autoFocus
+            />
         </div>
     );
 
@@ -267,10 +264,31 @@ export default function TemplateDemo() {
                 
                 </div>
             )}
-            <Dialog header="Select Question Types" headerStyle={{ color: '#B721FFF1' }} visible={visible} style={{ width: '80vw', height: '70vh' }} onHide={() => { setSelected(selected.map(() => false)); setVisible(false)}} footer={footerContent}>
-                <div style={{display:'flex',flexDirection:'row',justifyContent:"space-around", alignContent:'center',marginTop:'1rem'}}>
-                    {questionTypes.map((card,idx)=>
-                        <Card sx={{ width:200, height:200, maxWidth: 515, boxShadow: selected[idx] ? '0px 0px 8px 8px rgba(183, 33, 255, 0.4) ' : '0px 0px 4px rgba(0, 0, 0, 0.3)', transition: 'box-shadow 0.3s ease-in-out',}} onClick={()=>handleClick(idx)}>
+            <Dialog
+                className="modal-qa-selection"
+                header="Select Question Types"
+                headerStyle={{ color: '#B721FFF1' }}
+                visible={visible}
+                style={{ width: '80vw', height: '70vh' }}
+                onHide={() => {
+                    setSelected(selected.map(() => false));
+                    setVisible(false)
+                }}
+                footer={footerContent}
+            >
+                <div className="card-main-box">
+                    {
+                        questionTypes.map((card,idx) =>
+                        <Card
+                            sx={{
+                                width:200,
+                                height:200,
+                                maxWidth: 515,
+                                boxShadow: selected[idx] ? '0px 0px 8px 8px rgba(183, 33, 255, 0.4) ' : '0px 0px 4px rgba(0, 0, 0, 0.3)',
+                                transition: 'box-shadow 0.3s ease-in-out',
+                            }}
+                            onClick={()=>handleClick(idx)}
+                        >
                             <CardActionArea>
                                 <CardMedia
                                     component="img"
@@ -295,20 +313,25 @@ export default function TemplateDemo() {
                                 </Typography>
                             </CardActionArea>
                         </Card>
-                )}
+                        )
+                    }
 
                 </div>
+                
             </Dialog>
-            { isLoading && (
-                <div className='centered-container'>
-                    <div className="centered-container" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: "100%",height:"80vh" }}>
-                        <img src={Loading} width="545px" />
-                        <span className="empty-container my-5" style={{ fontSize: '1.8rem', color: 'var(--text-color-secondary)' }}>
-                            We are generating questions for you! Don&apos;t leave us yet.
-                        </span>
-                    </div>
-               </div>
-            )}
+            
+            {
+                isLoading && (
+                    <div className='centered-container'>
+                        <div className="centered-sub-container">
+                            <img src={Loading} alt="Loading image" width="545px" />
+                            <span className="empty-container">
+                                We are generating questions for you! Don&apos;t leave us yet.
+                            </span>
+                        </div>
+                   </div>
+                )
+            }
         </>
     );
 }
