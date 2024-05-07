@@ -17,6 +17,7 @@ import { CardActionArea } from '@mui/material';
 import L1 from './assets/recall.gif'
 import L2 from './assets/understand.gif'
 import L3 from './assets/apply.gif'
+
 export default function TemplateDemo() {
     const toast = useRef(null);
     const [visible, setVisible] = useState(false);
@@ -27,10 +28,11 @@ export default function TemplateDemo() {
     const [selected,setSelected]=useState([false,false,false])
     const [ isLoading, setIsLoading ] = useState(false);
     const[questions,setQuestions]=useState(null);
-    const questionTypes=[
-        { name:'Recall',code:'1',img:L1},
-        {name:'Understand',code:'2',img:L2},
-        {name:'Apply',code:'3',img:L3}
+
+    const questionTypes= [
+        { name: 'Recall', code: '1', img: L1},
+        { name: 'Understand', code: '2', img: L2},
+        { name: 'Apply', code: '3', img: L3}
     ]
 
     const onTemplateSelect =async  (e) => {
@@ -108,7 +110,7 @@ export default function TemplateDemo() {
         return (
             <div className="flex align-items-center flex-column">
                 {/* <i className="pi pi-file mt-3 p-5" style={{ fontSize: '5em', borderRadius: '50%', backgroundColor: 'var(--surface-b)', color: 'var(--surface-d)' }}></i> */}
-                <img src={fileUploadGif} style={{width:"12rem"}}/>
+                <img src={fileUploadGif} style={{width:"12rem"}} alt={"File upload"} />
                 <span className="empty-container my-5" style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }}>
                     Choose a PDF or video file 
                 </span>
@@ -132,32 +134,31 @@ export default function TemplateDemo() {
         const formData = new FormData();
         formData.append('file', file);
         let response1 ,response2,response3;
-        console.log("Selected",selected)
-        if(selected[0]==1){
-            console.log("remember called")
-            response1=await axios.post('http://127.0.0 .1:5000//generate-question-answers/remember', formData, {
+
+        if(selected[0]){
+            response1 = await axios.post('http://127.0.0.1:5000/generate-question-answers/remember', formData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
             });
         } 
-        if(selected[1]==1){
-            console.log("understand called")
-            response2 = await axios.post('http://127.0.0.1:5000//generate-question-answers/understand', formData, {
+
+        if(selected[1]){
+            response2 = await axios.post('http://127.0.0.1:5000/generate-question-answers/understand', formData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
             });
         }
-        if(selected[2]==1){
-            response3 = await axios.post('http://127.0.0.1:5000//generate-question-answers/apply', formData, {
+
+        if(selected[2]){
+            response3 = await axios.post('http://127.0.0.1:5000/generate-question-answers/apply', formData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
             });
         }
-        
-        
+
         // const questions1 = response1.status === 200 ? response1.data.data.questions['question-answer'] : [];
         // const questions2 = response2.status === 200 ? response2.data.data.questions['question-answer'] : [];
         // const questions3 = response3.status === 200 ? response3.data.data.questions['question-answer'] : [];
@@ -167,21 +168,33 @@ export default function TemplateDemo() {
         //     if (questions.option.includes(questions.answer))
         //         new_questions3.push(questions);
         // }
-        
+        let qa={};
+        if(response1){
+            qa['remember']=response1.data;
+        }
+        if(response2){
+            qa['understand']=response2.data;
+        }
+        if(response3){
+            qa['apply']=response3.data;
+        }
+
         setIsLoading(false);
-        
+        return navigate('/p', { state: qa });
     }
+
     const footerContent = (
         <div>
             <Button className="check" label="Submit" icon="pi pi-check" onClick={handleSubmit} autoFocus style={{ background:'#B721FF!important'}} />
         </div>
     );
+
     const handleClick=(idx)=>{
         const updatedState=selected;
         updatedState[idx]=!updatedState[idx]
         setSelected([...updatedState])
-
     }
+
     return (
         <>
             { !isLoading && (
@@ -190,7 +203,7 @@ export default function TemplateDemo() {
                         <FileUpload
                             className='file-upload-container'
                             ref={fileUploadRef}
-                            style={{ width: file ? "100%" : "80%", borderRadius: '16px', padding: '10px', transition: file ? 'ease-in-out 1s' : 'none', boxShadow: '0px 0px 2px rgba(243, 142, 192,3)' }}
+                            style={{  width: "80%", borderRadius: '16px', padding: '10px', transition: file ? 'ease-in-out 1s' : 'none' }}
                             name="text"
                             customUpload
                             uploadHandler={uploadPdf}
@@ -208,10 +221,10 @@ export default function TemplateDemo() {
                             cancelOptions={cancelOptions}
                         />
                     </div>
-                    <div class="vertical-line" style={{
+                    <div className="vertical-line" style={{
                         borderLeft: '1px solid #B721FFF1', boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.5)', height:'80vh',marginLeft:'3rem'}}></div>
                         {file ?
-                                <div className="pdf-viewer-container" style={{ flex: 1, marginLeft: '20px' ,width:file?"65%":"50%",transition:file?'ease-in-out 1s':'none'}}>
+                                <div className="pdf-viewer-container" style={{ flex: 1, marginLeft: '20px' ,width: "40%",transition:file?'ease-in-out 1s':'none'}}>
                                     {file?.type === 'application/pdf' && (
                                         <ViewPdf key={file.name} fileUrl={URL.createObjectURL(file)} />
                                     )}
@@ -229,7 +242,7 @@ export default function TemplateDemo() {
                                                 Your browser does not support the video tag.
                                             </video>
                                         </CardCover>
-                                 </Card>
+                                    </Card>
                                     )}
                                 </div>:(
                                     <div className="notfound" style={{display:'flex',flexDirection:'column',justifyContent:'center', alignItems:'center',marginLeft: '20px', width: "55%" }}>
@@ -246,13 +259,7 @@ export default function TemplateDemo() {
             <Dialog header="Select Question Types" headerStyle={{ color: '#B721FFF1' }} visible={visible} style={{ width: '80vw', height: '70vh' }} onHide={() => { setSelected(selected.map(() => false)); setVisible(false)}} footer={footerContent}>
                 <div style={{display:'flex',flexDirection:'row',justifyContent:"space-around", alignContent:'center',marginTop:'1rem'}}>
                     {questionTypes.map((card,idx)=>
-                        
-                        <Card sx={{
-                             width:200,
-                             height:200,
-                            maxWidth: 515, boxShadow: selected[idx] ? '0px 0px 8px 8px rgba(183, 33, 255, 0.4) ' : '0px 0px 4px rgba(0, 0, 0, 0.3)',
-                            transition: 'box-shadow 0.3s ease-in-out',
-                        }} onClick={()=>handleClick(idx)}>
+                        <Card sx={{ width:200, height:200, maxWidth: 515, boxShadow: selected[idx] ? '0px 0px 8px 8px rgba(183, 33, 255, 0.4) ' : '0px 0px 4px rgba(0, 0, 0, 0.3)', transition: 'box-shadow 0.3s ease-in-out',}} onClick={()=>handleClick(idx)}>
                             <CardActionArea>
                                 <CardMedia
                                     component="img"
@@ -278,8 +285,7 @@ export default function TemplateDemo() {
                             </CardActionArea>
                         </Card>
                 )}
-                    
-                   
+
                 </div>
             </Dialog>
             { isLoading && (
