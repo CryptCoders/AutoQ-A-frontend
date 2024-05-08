@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import TextArea from '@mui/material/TextareaAutosize';
+import CircularProgress from '@mui/material/CircularProgress';
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import Highlighter from 'react-highlight-words';
 import { Toast } from 'primereact/toast';
@@ -16,7 +17,7 @@ import filenotFoundGif from "./assets/filenotfound.gif";
 import NotFound from "./NotFound.jsx";
 import { formatQuestion, formatAnswer,formatKeyword } from "./service/format.js";
 
-export default function PaperFormat({ qaData }) {
+export default function PaperFormat({ qaData, level }) {
 	const [first, setFirst] = useState(0);
 	const [rows, setRows] = useState(3);
 	
@@ -24,23 +25,27 @@ export default function PaperFormat({ qaData }) {
 	const [modalContent, setModalContent] = useState(<></>);
 	const [ checkAnswer, setCheckAnswer ] = useState([]);
 	const [score, setScore] = useState(undefined);
+	const [scoreLoading, setScoreLoading] = useState(false);
 	const [copy, setCopy] = useState(false);
 	const [highlight, setHighlight] = useState([]);
 	
 	const toast = useRef(null);
 	
 	const handleEvaluate = async () => {
-		setScore(0);
-		
+		setScore(undefined);
+		setScoreLoading(true);
+
 		const response = await axios.post('http://127.0.0.1:5000/evaluate-answer', {
-			desired_answer: checkAnswer[0],
-			user_answer: checkAnswer[1]
+			question: checkAnswer[0],
+			desired_answer: checkAnswer[1],
+			user_answer: checkAnswer[2]
 		}, {
 			headers: {
-			"Content-Type": "application/json"
+				"Content-Type": "application/json"
 			}
 		});
-		
+
+		setScoreLoading(false);
 		setScore(response?.data?.score);
 	};
 	
@@ -63,30 +68,33 @@ export default function PaperFormat({ qaData }) {
 													{first + idx + 1}. {formatQuestion(qaPair.question)}
 												</div>
 
-												<div className="qa-format1-evaluate">
-													<button
-														className="qa-format1-evaluate-btn"
-														onClick={() => {
-															setScore(0);
-															setCheckAnswer([qaPair.answer, '']);
-															setVisible(true);
-															setModalContent(
-																<div className="modal-container">
-																	<TextArea
-																		className="modal-answer"
-																		minRows={ 9 }
-																		placeholder={ "Write your answer here..." }
-																		onChange={ (e) => {
-																			setCheckAnswer([qaPair.answer, e.target.value])
-																		}}
-																	/>
-																</div>
-															)
-														}}
-													>
+												{
+													level !== "remember" && (
+														<div className="qa-format1-evaluate">
+														<button
+															className="qa-format1-evaluate-btn"
+															onClick={() => {
+																setScore(undefined);
+																setCheckAnswer([qaPair.question, qaPair.answer, '']);
+																setVisible(true);
+																setModalContent(
+																	<div className="modal-container">
+																		<TextArea
+																			className="modal-answer"
+																			minRows={ 9 }
+																			placeholder={ "Write your answer here..." }
+																			onChange={ (e) => {
+																				setCheckAnswer([qaPair.question, qaPair.answer, e.target.value]);
+																			}}
+																		/>
+																	</div>
+																)
+															}}
+														>
 														Evaluate
 													</button>
 												</div>
+													)}
 											</div>
 
 											<div className="qa-format1-answer">
@@ -163,8 +171,7 @@ export default function PaperFormat({ qaData }) {
 							}}
 						/>
 					</>
-				) : <NotFound/>
-				}
+				) : <NotFound/> }
 
 				<Dialog
 					className="modal-main-container"
@@ -179,7 +186,7 @@ export default function PaperFormat({ qaData }) {
 					{modalContent}
 
 					{
-						score === undefined ? (
+						<>
 							<Typography
 								className="modal-evaluate-text"
 								variant="h5"
@@ -188,16 +195,22 @@ export default function PaperFormat({ qaData }) {
 									color: '#B14BF4'
 								}}
 							>
-								We have evaluated your answer to be: {score}/10
+								{ score === 0 || !isNaN(score) ?
+									`We have evaluated your answer to be: ${ score }/10` :
+									`We have yet to evaluate your answer!`
+								}
 							</Typography>
-						) : (
+
 							<Button
+								style={{ width: '9rem', height: '3rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
 								className="modal-evaluate-btn"
-								icon="pi pi-verified"
-								label="Evaluate"
+								icon={!scoreLoading ? "pi pi-verified" : "" }
+								label={!scoreLoading ? "Evaluate" : "" }
 								onClick={handleEvaluate}
-							/>
-						)
+							>
+								{ scoreLoading ? <CircularProgress style={{ width: '2rem', height: '2rem', color: 'white' }} /> : <></> }
+							</Button>
+						</>
 					}
 				</Dialog>
 			</>

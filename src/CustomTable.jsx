@@ -12,15 +12,16 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import NotFound from "./NotFound.jsx";
 import { formatQuestion, formatAnswer } from "./service/format.js";
+import CircularProgress from "@mui/material/CircularProgress";
 
-const CustomTable = ({ qaData }) => {
-	console.log(qaData)
+const CustomTable = ({ qaData, level }) => {
 	const dt = useRef (null);
 	const counter = useRef(0);
 	const [ visible, setVisible ] = useState(false);
 	const [ modalHeader, setModalHeader ] = useState("");
 	const [ modalContent, setModalContent ] = useState(<></>);
 	const [ checkAnswer, setCheckAnswer ] = useState([]);
+	const [scoreLoading, setScoreLoading] = useState(false);
 	const [ score, setScore ] = useState(undefined);
 	
 	const [filters, setFilters] = useState ({
@@ -104,19 +105,21 @@ const CustomTable = ({ qaData }) => {
             </div>
         </div>
     );
-	
 	const handleEvaluate = async () => {
 		setScore(undefined);
-		
+		setScoreLoading(true);
+
 		const response = await axios.post('http://127.0.0.1:5000/evaluate-answer', {
-			desired_answer: checkAnswer[0],
-			user_answer: checkAnswer[1]
+			question: checkAnswer[0],
+			desired_answer: checkAnswer[1],
+			user_answer: checkAnswer[2]
 		}, {
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-		
+			headers: {
+				"Content-Type": "application/json"
+			}
+		});
+
+		setScoreLoading(false);
 		setScore(response?.data?.score);
 	};
 
@@ -130,40 +133,43 @@ const CustomTable = ({ qaData }) => {
 					flexWrap: 'wrap'
 				}}
 			>
-				<span className='blur-effect' style={{ width: '70%' }}>
+				<span className='blur-effect' style={{ width: '75%' }}>
 					{ formatAnswer(data.answer) }
 				</span>
-				
-				<div className="qa-format1-evaluate">
-					<button
-						className="qa-format1-evaluate-btn"
-						onClick={() => {
-							setScore(0);
-							setCheckAnswer([data.answer, '']);
-							setVisible(true);
-							setModalContent(
-								<div className="modal-container">
-									<TextArea
-										className="modal-answer"
-										minRows={9}
-										placeholder={"Write your answer here..."}
-										onChange={(e) => {
-											setCheckAnswer([data.answer, e.target.value])
-										}}
-									/>
-								</div>
-							)
-						}}
-					>
-						Evaluate
-					</button>
-				</div>
+
+				{
+				level !== "remember" && (
+					<div className="qa-format1-evaluate">
+						<button
+							className="qa-format1-evaluate-btn"
+							onClick={() => {
+								setScore(undefined);
+								setCheckAnswer([data.question, data.answer, '']);
+								setVisible(true);
+								setModalContent(
+									<div className="modal-container">
+										<TextArea
+											className="modal-answer"
+											minRows={9}
+											placeholder={"Write your answer here..."}
+											onChange={(e) => {
+												setCheckAnswer([data.question, data.answer, e.target.value])
+											}}
+										/>
+									</div>
+								)
+							}}
+						>
+							Evaluate
+						</button>
+					</div>
+					)}
 			</div>
 		)
 	}
 	
 	return (
-		<div className="card" style={{ background: 'transparent',display:'flex',justifyContent:'center'}}>
+		<div className="card" style={{ maxWidth: '95%', background: 'transparent',display:'flex',justifyContent:'center'}}>
 			<Dialog
 				className="modal-main-container"
 				visible={visible}
@@ -177,33 +183,39 @@ const CustomTable = ({ qaData }) => {
 				{modalContent}
 
 				{
-					score === undefined ? (
-						<Typography
-							className="modal-evaluate-text"
-							variant="h5"
-							component="h5"
-							style={{
-								color: '#B14BF4'
-							}}
-						>
-							We have evaluated your answer to be: {score}/10
-						</Typography>
-					) : (
-						<Button
-							className="modal-evaluate-btn"
-							icon="pi pi-verified"
-							label="Evaluate"
-							onClick={handleEvaluate}
-						/>
-					)
-				}
+						<>
+							<Typography
+								className="modal-evaluate-text"
+								variant="h5"
+								component="h5"
+								style={{
+									color: '#B14BF4'
+								}}
+							>
+								{ score === 0 || !isNaN(score) ?
+									`We have evaluated your answer to be: ${ score }/10` :
+									`We have yet to evaluate your answer!`
+								}
+							</Typography>
+
+							<Button
+								style={{ width: '9rem', height: '3rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+								className="modal-evaluate-btn"
+								icon={!scoreLoading ? "pi pi-verified" : "" }
+								label={!scoreLoading ? "Evaluate" : "" }
+								onClick={handleEvaluate}
+							>
+								{ scoreLoading ? <CircularProgress style={{ width: '2rem', height: '2rem', color: 'white' }} /> : <></> }
+							</Button>
+						</>
+					}
 			</Dialog>
 			
 			<Tooltip target=".export-buttons>button" position="bottom"/>
 			
 			{ qaData && Object.keys(qaData).length ? (
 				<DataTable
-					style={{ background: 'transparent !important',width:'80%'}}
+					style={{ background: 'transparent !important',width:'100%', fontFamily: '"Poppins", sans-serif'}}
 					ref={ dt }
 					value={ qaData }
 					showGridlines
@@ -219,11 +231,10 @@ const CustomTable = ({ qaData }) => {
 						'type'
 					]}
 					tableStyle={{ minWidth: '50rem' }}
-				
 				>
 					<Column header="Sr No" headerStyle={{ width: '3rem' }} body={(data, options) => options.rowIndex + 1}></Column>
 					<Column field="question" header='Questions' body={(data) => formatQuestion(data.question)} style={{fontWeight:'600'}} />
-					<Column field="answer" header='Answers' body={(data) => ansTemplate(data)} />
+					<Column field="answer" header='Answers' body={(data) => ansTemplate(data)} style={{textAlign: "justify", textJustify: "inter-word"}}/>
 				</DataTable>
 				): <NotFound/>
 			}
