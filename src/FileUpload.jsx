@@ -17,7 +17,11 @@ import L1 from './assets/recall.gif'
 import L2 from './assets/understand.gif'
 import L3 from './assets/apply.gif'
 import Loading from './assets/loading.gif'
-
+import FormLabel from '@mui/material/FormLabel';
+import FormControl from '@mui/material/FormControl';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 export default function TemplateDemo() {
     const toast = useRef(null);
     const navigate = useNavigate();
@@ -96,26 +100,30 @@ export default function TemplateDemo() {
 
     const itemTemplate = (file, props) => {
         return (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px' }}>
-                <div className="flex align-items-center" style={{ width: '40%' }}>
-                    <i className='pi pi-file-pdf' style={{ fontSize: '1.5rem' }} />
-                    <span className="file-name flex flex-column text-left ml-3">
-                        {truncateFilename(file.name,21)}
-                        <small>{new Date().toLocaleDateString()}</small>
-                    </span>
+            <div style={{ display: 'flex', flexDirection: 'column', padding: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px' }}>
+                    <div className="flex align-items-center" style={{ width: '40%' }}>
+                        <i className='pi pi-file-pdf' style={{ fontSize: '1.5rem' }} />
+                        <span className="file-name flex flex-column text-left ml-3">
+                            {truncateFilename(file.name, 21)}
+                            <small>{new Date().toLocaleDateString()}</small>
+                        </span>
+                    </div>
+                    <Button type="button" icon="pi pi-times" className="p-button-outlined p-button-rounded p-button-danger ml-auto" onClick={() => onTemplateRemove(file, props.onRemove)} />
                 </div>
-
-                {
-                    file.type === "application/pdf" && (
-                        <div style={{ width: '20%', display: 'flex', alignItems: 'center' }}>
-                            <input type="checkbox" id="ocrCheckbox" checked={isSelected} onChange={handleCheckboxChange} />
-                            <label htmlFor="ocrCheckbox">OCR</label>
-                        </div>
-                    )
-                }
-
-                <Button type="button" icon="pi pi-times" className="p-button-outlined p-button-rounded p-button-danger ml-auto" onClick={() => onTemplateRemove(file, props.onRemove)} />
+                <FormControl component="fieldset" variant="standard">
+                   
+                    <FormGroup>
+                        <FormControlLabel
+                            control={
+                                <Switch checked={isSelected} onChange={handleCheckboxChange} name="gilad" />
+                            }
+                            label="OCR"
+                        />
+                    </FormGroup>
+                </FormControl>
             </div>
+            
         );
     };
 

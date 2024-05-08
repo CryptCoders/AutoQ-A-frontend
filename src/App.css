@@ -561,3 +561,9 @@ span.p-dropdown-label, .p-dropdown-item {
     height:80vh;
     margin-left: 3rem;
 }
+
+.MuiFormControlLabel-label{
+    color:black!important;
+    background:none;
+    -webkit-text-fill-color:black;
+}
