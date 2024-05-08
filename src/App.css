@@ -412,7 +412,8 @@ span.p-dropdown-label, .p-dropdown-item {
 .modal-main-container .p-dialog-title {
     font-weight: 450 !important;
     font-size: 1.3rem !important;
-    padding: 0;
+    padding: 0 !important;
+    margin: 0;
     color: black;
 }
 
@@ -426,7 +427,7 @@ span.p-dropdown-label, .p-dropdown-item {
 }
 
 .modal-answer {
-    width: 60rem;
+    width: 61rem;
     border-radius: 10px;
     font-size: 1.2rem;
     border: 1px solid #6366F1;
@@ -453,8 +454,8 @@ span.p-dropdown-label, .p-dropdown-item {
 }
 
 .modal-main-container {
-    width: 80vw;
-    height: 70vh;
+    width: 60vw;
+    height: 60vh;
 }
 
 .modal-qa-selection {

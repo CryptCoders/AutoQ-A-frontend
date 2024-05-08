@@ -100,19 +100,17 @@ export default function TemplateDemo() {
 
     const itemTemplate = (file, props) => {
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', padding: '10px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px' }}>
-                    <div className="flex align-items-center" style={{ width: '40%' }}>
-                        <i className='pi pi-file-pdf' style={{ fontSize: '1.5rem' }} />
-                        <span className="file-name flex flex-column text-left ml-3">
-                            {truncateFilename(file.name, 21)}
-                            <small>{new Date().toLocaleDateString()}</small>
-                        </span>
-                    </div>
-                    <Button type="button" icon="pi pi-times" className="p-button-outlined p-button-rounded p-button-danger ml-auto" onClick={() => onTemplateRemove(file, props.onRemove)} />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px' }}>
+                <div className="flex align-items-center" style={{ width: '40%' }}>
+                    <i className='pi pi-file-pdf' style={{ fontSize: '1.5rem' }} />
+                    <span className="file-name flex flex-column text-left ml-3">
+                        {truncateFilename(file.name, 21)}
+                        <small>{new Date().toLocaleDateString()}</small>
+                    </span>
                 </div>
+
                 <FormControl component="fieldset" variant="standard">
-                   
+
                     <FormGroup>
                         <FormControlLabel
                             control={
@@ -122,8 +120,9 @@ export default function TemplateDemo() {
                         />
                     </FormGroup>
                 </FormControl>
+
+                <Button type="button" icon="pi pi-times" className="p-button-outlined p-button-rounded p-button-danger ml-auto" onClick={() => onTemplateRemove(file, props.onRemove)} />
             </div>
-            
         );
     };
 
@@ -264,7 +263,7 @@ export default function TemplateDemo() {
                             )}
                         </div> : (
                             <div className="notfound" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginLeft: '20px', width: "55%" }}>
-                                <img src={filenotFoundGif} width="245px" />
+                                <img src={filenotFoundGif} width="245px" alt={"File not found"} />
                                 <span className="empty-container my-5" style={{ fontSize: '1.8rem', color: 'var(--text-color-secondary)' }}>
                                     No File for Preview
                                 </span>
@@ -290,12 +289,13 @@ export default function TemplateDemo() {
                     {
                         questionTypes.map((card, idx) =>
                             <Card
+                                key={ idx }
                                 sx={{
                                     width: 200,
                                     height: 200,
                                     maxWidth: 515,
                                     boxShadow: selected[idx] ? '0px 0px 8px 8px rgba(183, 33, 255, 0.4) ' : '0px 0px 4px rgba(0, 0, 0, 0.3)',
-                                    transition: 'box-shadow 0.3s ease-in-out',
+                                    transition: 'box-shadow 0.3s ease-in-out'
                                 }}
                                 onClick={() => handleClick(idx)}
                             >

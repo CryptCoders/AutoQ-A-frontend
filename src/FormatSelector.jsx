@@ -10,7 +10,6 @@ export default function FormatSelector() {
 	const options = ["Paper" , "Table"];
 	const { state } = useLocation();
 	const levelOptions = [];
-	console.log("state",state);
 	for (let key in state) {
 		levelOptions.push({
 			"level": key,
@@ -55,7 +54,7 @@ export default function FormatSelector() {
 					/>
 				</div>
 
-				{ value === "Paper" ? <PaperFormat qaData={state[selectedLevel.level].data}/> : <CustomTable qaData={state[selectedLevel.level].data}/> }
+				{ value === "Paper" ? <PaperFormat qaData={state[selectedLevel.level].data} level={selectedLevel.level}/> : <CustomTable qaData={state[selectedLevel.level].data} level={selectedLevel.level}/> }
 			</div>
 		</div>
 	);
