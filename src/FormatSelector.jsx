@@ -10,7 +10,7 @@ export default function FormatSelector() {
 	const options = ["Paper" , "Table"];
 	const { state } = useLocation();
 	const levelOptions = [];
-	
+	console.log("state",state);
 	for (let key in state) {
 		levelOptions.push({
 			"level": key,

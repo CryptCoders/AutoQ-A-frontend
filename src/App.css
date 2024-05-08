@@ -94,16 +94,16 @@ body {
     font-weight: 500;
 }
 
-.blur-effect {
+/* .blur-effect {
     filter: blur(4px);
-}
-
+} */
+/* 
 .blur-effect:hover {
     filter: blur(0);
-}
+} */
 
 .p-datatable-tbody tr td:nth-child(2) {
-    width: 45rem !important;
+    width:30rem !important;
 }
 
 .landing-page {

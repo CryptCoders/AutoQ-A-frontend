@@ -14,7 +14,7 @@ import { Toast } from 'primereact/toast';
 import axios from 'axios';
 import filenotFoundGif from "./assets/filenotfound.gif";
 import NotFound from "./NotFound.jsx";
-import { formatQuestion, formatAnswer } from "./service/format.js";
+import { formatQuestion, formatAnswer,formatKeyword } from "./service/format.js";
 
 export default function PaperFormat({ qaData }) {
 	const [first, setFirst] = useState(0);
@@ -91,13 +91,13 @@ export default function PaperFormat({ qaData }) {
 
 											<div className="qa-format1-answer">
 												<span style={{fontWeight: 600}}>Answer: </span>
-												<Highlighter
+												{/* <Highlighter
 													key={first + idx}
 													searchWords={ highlight.includes(first + idx) ? qaPair.keywords : [] }
 													textToHighlight={formatAnswer(qaPair.answer)}
-												/>
+												/> */}
 
-												{/*<span>{qaPair.answer}</span>*/}
+												<span>{formatAnswer(qaPair.answer)}</span>
 												<div
 													className="qa-format1-copy"
 												>
@@ -133,9 +133,9 @@ export default function PaperFormat({ qaData }) {
 													>
 														<ul className="qa-format1-keyword">
 															{
-																qaPair.keywords.map((keyword, idx) => {
+																qaPair?.keywords?.map((keyword, idx) => {
 																	return (
-																		<li className="qa-format1-keyword-li" key={idx}>{keyword}</li>
+																		<li className="qa-format1-keyword-li" style={{listStyleType:'none'}} key={idx}>{formatKeyword(keyword)}</li>
 																	)
 																})
 															}

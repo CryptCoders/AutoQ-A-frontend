@@ -131,67 +131,53 @@ const CustomTable = ({ qaData }) => {
 				}}
 			>
 				<span className='blur-effect' style={{ width: '70%' }}>
-					{ data.answer }
+					{ formatAnswer(data.answer) }
 				</span>
 				
-				<Button
-					onClick={() => {
-						setScore(undefined);
-						setCheckAnswer([data.answer, '']);
-						setVisible(true);
-						setModalHeader ("Check here");
-						setModalContent(
-							<div
-								style={{
-									display: 'flex',
-									flexDirection: 'column',
-									justifyContent: 'center',
-									alignItems: 'center'
-								}}
-							>
-								<TextArea
-									style={{
-										width: '60rem',
-										borderRadius: '5px',
-										fontSize: '1rem',
-										margin: '1rem',
-										border: '2px solid #6366F1',
-										padding: '1rem'
-									}}
-									minRows={ 9 }
-									placeholder={ "Write your answer here..." }
-									onChange={ (e) => { setCheckAnswer([data.answer, e.target.value]) } }
-								/>
-							</div>
-						)
-					}}
-				>
-					💪🏻
-					Try Yourself!
-				</Button>
+				<div className="qa-format1-evaluate">
+					<button
+						className="qa-format1-evaluate-btn"
+						onClick={() => {
+							setScore(0);
+							setCheckAnswer([data.answer, '']);
+							setVisible(true);
+							setModalContent(
+								<div className="modal-container">
+									<TextArea
+										className="modal-answer"
+										minRows={9}
+										placeholder={"Write your answer here..."}
+										onChange={(e) => {
+											setCheckAnswer([data.answer, e.target.value])
+										}}
+									/>
+								</div>
+							)
+						}}
+					>
+						Evaluate
+					</button>
+				</div>
 			</div>
 		)
 	}
 	
 	return (
-		<div className="card" style={{ background: 'transparent'}}>
+		<div className="card" style={{ background: 'transparent',display:'flex',justifyContent:'center'}}>
 			<Dialog
 				className="modal-main-container"
-				visible={ visible }
-				header={ modalHeader }
+				visible={visible}
+				header="Provide your answer, we'll evaluate it for you!"
 				onHide={() => {
 					setVisible(false);
 					setCheckAnswer([]);
 					setScore(undefined);
 				}}
-				style={{
-					minWidth: '50vw',
-				}}
 			>
-				{ modalContent }
-				
+				{modalContent}
+
 				{
-					modalHeader === 'Check MCQ here' ? <></> : score === 0 || !isNaN(score) ? (
+					score === undefined ? (
 						<Typography
 							className="modal-evaluate-text"
 							variant="h5"
@@ -200,14 +186,14 @@ const CustomTable = ({ qaData }) => {
 								color: '#B14BF4'
 							}}
 						>
-							We have evaluated your answer to be: { score }/10
+							We have evaluated your answer to be: {score}/10
 						</Typography>
 					) : (
 						<Button
 							className="modal-evaluate-btn"
 							icon="pi pi-verified"
 							label="Evaluate"
-							onClick={ handleEvaluate }
+							onClick={handleEvaluate}
 						/>
 					)
 				}
@@ -217,7 +203,7 @@ const CustomTable = ({ qaData }) => {
 			
 			{ qaData && Object.keys(qaData).length ? (
 				<DataTable
-					style={{ background: 'transparent !important'}}
+					style={{ background: 'transparent !important',width:'80%'}}
 					ref={ dt }
 					value={ qaData }
 					showGridlines
@@ -236,7 +222,7 @@ const CustomTable = ({ qaData }) => {
 				
 				>
 					<Column header="Sr No" headerStyle={{ width: '3rem' }} body={(data, options) => options.rowIndex + 1}></Column>
-					<Column field="question" header='Questions' body={(data) => formatQuestion(data.question)} />
+					<Column field="question" header='Questions' body={(data) => formatQuestion(data.question)} style={{fontWeight:'600'}} />
 					<Column field="answer" header='Answers' body={(data) => ansTemplate(data)} />
 				</DataTable>
 				): <NotFound/>

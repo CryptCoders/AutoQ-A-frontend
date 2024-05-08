@@ -13,13 +13,27 @@ const toBoldUnicode = (text) => {
 export const formatQuestion = (question) => {
 	question = question.replaceAll(/\*\*[a-zA-Z ]*:\*\*/g, "");
 	question = question.replaceAll(/[0-9]*\./g, "");
+	question = question.replace(/\*\*/g, "");
 	return question;
 };
 
 export const formatAnswer = (answer) => {
-	answer = answer.replaceAll(/\*\*(.*?)\*\*/g, (match, group) => {
-		return toBoldUnicode(group);
-	});
+	try {
 
+    answer = answer.replaceAll(/\*\*(.*?)\*\*/g, (match, group) => {
+      return toBoldUnicode(group);
+    });
+	answer = answer.replaceAll(/\*/g, "");
+	answer = answer.replace(/GEMINI_GENERATED:/, "");
+	
+  } catch (err) {
+    console.error(err);
+  }
 	return answer;
+};
+export const formatKeyword = (keyword) => {
+  // Remove ** from the beginning and end of the word
+  keyword = keyword.replace(/\*\*(.*?)\*\*/, "$1");
+
+  return keyword;
 };
