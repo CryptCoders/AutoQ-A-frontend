@@ -23,7 +23,7 @@ export const ViewPdf = ({ fileUrl }) => {
         <>
             {pdfDocument && (
                 <>
-                    <div style={{ maxHeight: '34rem', overflowY: 'auto' }}>
+                    <div style={{ maxHeight: '40rem', overflowY: 'auto' }}>
                         <canvas ref={canvasRef} style={{ display: 'block', margin: 'auto' }} />
                     </div>
 

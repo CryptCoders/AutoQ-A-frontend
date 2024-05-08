@@ -28,6 +28,7 @@ export default function TemplateDemo() {
     const [selected,setSelected]=useState([false,false,false])
     const [ isLoading, setIsLoading ] = useState(false);
     const[questions,setQuestions] = useState(null);
+    const[isSelected,setisSelected]=useState(false);
 
     const questionTypes= [
         { name: 'Recall', code: '1', img: L1},
@@ -61,7 +62,6 @@ export default function TemplateDemo() {
     const onTemplateClear = () => {
         setFile(null);
         setTotalSize(0);
-        
     };
 
     const truncateFilename=(filename, maxLength)=> {
@@ -71,7 +71,11 @@ export default function TemplateDemo() {
         const prefix = filename.substring(0, 9);
         const suffix = filename.substring(filename.length - 9);
         return prefix + "..." + suffix;
-    }
+    };
+
+    const handleCheckboxChange = () => {
+        setisSelected(!isSelected);
+    };
 
     const headerTemplate = (options) => {
         const { className, chooseButton, uploadButton, cancelButton } = options;
@@ -92,18 +96,25 @@ export default function TemplateDemo() {
 
     const itemTemplate = (file, props) => {
         return (
-            <div style={{ boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)' }}>
-                <div style={{ width: '40%' }}>
-                    <i style={{ fontSize: '1.5rem' }} />
-                    <span className="file-name">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px' }}>
+                <div className="flex align-items-center" style={{ width: '40%' }}>
+                    <i className='pi pi-file-pdf' style={{ fontSize: '1.5rem' }} />
+                    <span className="file-name flex flex-column text-left ml-3">
                         {truncateFilename(file.name,21)}
-                        <small>{" " + new Date().toLocaleDateString()}</small>
+                        <small>{new Date().toLocaleDateString()}</small>
                     </span>
                 </div>
-                <Button
-                    type="button"
-                    icon="pi pi-times"
-                    onClick={() => onTemplateRemove(file, props.onRemove)} />
+
+                {
+                    file.type === "application/pdf" && (
+                        <div style={{ width: '20%', display: 'flex', alignItems: 'center' }}>
+                            <input type="checkbox" id="ocrCheckbox" checked={isSelected} onChange={handleCheckboxChange} />
+                            <label htmlFor="ocrCheckbox">OCR</label>
+                        </div>
+                    )
+                }
+
+                <Button type="button" icon="pi pi-times" className="p-button-outlined p-button-rounded p-button-danger ml-auto" onClick={() => onTemplateRemove(file, props.onRemove)} />
             </div>
         );
     };
@@ -211,12 +222,11 @@ export default function TemplateDemo() {
                         <FileUpload
                             className='file-upload-container'
                             ref={fileUploadRef}
-                            style={{  width: file?"100%":"80%", borderRadius: '16px', padding: '10px', transition: file ? 'ease-in-out 1s' : 'none' }}
+                            style={{  width: file?"85%":"80%", borderRadius: '16px', padding: '10px', transition: file ? 'ease-in-out 1s' : 'none' }}
                             name="text"
                             customUpload
                             uploadHandler={uploadPdf}
                             accept={".pdf, .mp4"}
-                            // maxFileSize={10000000000}
                             onUpload={onTemplateUpload}
                             onSelect={onTemplateSelect}
                             onError={onTemplateClear}
@@ -329,7 +339,7 @@ export default function TemplateDemo() {
                                 We are generating questions for you! Don&apos;t leave us yet.
                             </span>
                         </div>
-                   </div>
+                    </div>
                 )
             }
         </>
