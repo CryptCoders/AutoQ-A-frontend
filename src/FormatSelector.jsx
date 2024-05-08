@@ -1,8 +1,8 @@
 import { SelectButton } from 'primereact/selectbutton';
 import { useState } from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
-import PaperFormat from "./PaperFormat.jsx";
-import CustomTable from "./CustomTable.jsx";
+import PaperFormat from './PaperFormat.jsx';
+import CustomTable from './CustomTable.jsx';
 import ReplyRoundedIcon from '@mui/icons-material/ReplyRounded';
 import { Dropdown } from 'primereact/dropdown';
 
@@ -17,10 +17,8 @@ export default function FormatSelector() {
 			"header": key.charAt(0).toUpperCase() + key.slice(1) + " Level Questions"
 		})
 	}
-	
-	console.log(levelOptions)
+
 	const [selectedLevel, setSelectedLevel] = useState(levelOptions[0]);
-	console.log(selectedLevel, state[selectedLevel.level].data);
 	const [value, setValue] = useState(options[0]);
 	const navigate = useNavigate();
 
@@ -36,8 +34,6 @@ export default function FormatSelector() {
 					className="toggle-btn"
 					value={value}
 					options={options}
-					// optionValue={value}
-					// optionLabel="name"
 					optionDisabled={(option) => option === value}
 					onChange={(e) => {
 						setValue(e.value)
@@ -58,11 +54,8 @@ export default function FormatSelector() {
 						placeholder="Select a Level"
 					/>
 				</div>
-				
-				{ value === "Paper" ?
-					<PaperFormat qaData={state[selectedLevel.level].data}/> :
-					<CustomTable qaData={state[selectedLevel.level].data}/>
-				}
+
+				{ value === "Paper" ? <PaperFormat qaData={state[selectedLevel.level].data}/> : <CustomTable qaData={state[selectedLevel.level].data}/> }
 			</div>
 		</div>
 	);
