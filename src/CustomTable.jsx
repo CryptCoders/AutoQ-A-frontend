@@ -134,7 +134,7 @@ const CustomTable = ({ qaData, level }) => {
 				}}
 			>
 				<span className='blur-effect' style={{ width: '75%' }}>
-					{ formatAnswer(data.answer) }
+					{ formatAnswer(data.answer, data.question) }
 				</span>
 
 				{

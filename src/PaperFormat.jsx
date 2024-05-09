@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Paginator } from 'primereact/paginator';
 import { Divider } from 'primereact/divider';
@@ -28,6 +28,7 @@ export default function PaperFormat({ qaData, level }) {
 	const [scoreLoading, setScoreLoading] = useState(false);
 	const [copy, setCopy] = useState(false);
 	const [highlight, setHighlight] = useState([]);
+	const [qaDataUpdated, setQaDataUpdated] = useState(null);
 	
 	const toast = useRef(null);
 	
@@ -51,16 +52,20 @@ export default function PaperFormat({ qaData, level }) {
 	
 	const showCopied = () => {
 		toast.current.show({ severity: 'info', summary: 'Success', detail: 'Content Copied!' });
-	}
+	};
+
+	useEffect(() => {
+		setQaDataUpdated(qaData.filter((qa) => !qa.answer.includes('I am unable to answer this question')));
+	}, [qaData]);
 	
 	return (
 		<div className="qa-format1-container">
 			<>
-				{ qaData && Object.keys(qaData).length ? (
+				{ qaDataUpdated && Object.keys(qaDataUpdated).length ? (
 					<>
 						<ul className="qa-format1">
 							{
-								qaData.slice(first, first + rows).map((qaPair, idx) => {
+								qaDataUpdated.slice(first, first + rows).map((qaPair, idx) => {
 									return (
 										<li className="qa-format1-list" key={first + idx}>
 											<div className="qa-format-question-container">
@@ -105,7 +110,7 @@ export default function PaperFormat({ qaData, level }) {
 													textToHighlight={formatAnswer(qaPair.answer)}
 												/> */}
 
-												<span>{formatAnswer(qaPair.answer)}</span>
+												<span>{formatAnswer(qaPair.answer, qaPair.question)}</span>
 												<div
 													className="qa-format1-copy"
 												>
@@ -153,7 +158,7 @@ export default function PaperFormat({ qaData, level }) {
 											)}
 											<Divider/>
 										</li>
-									)
+									);
 								})
 							}
 						</ul>
@@ -162,7 +167,7 @@ export default function PaperFormat({ qaData, level }) {
 							className="paginator"
 							first={first}
 							rows={rows}
-							totalRecords={qaData.length}
+							totalRecords={qaDataUpdated.length}
 							rowsPerPageOptions={[3, 5]}
 							onPageChange={(e) => {
 								setFirst(e.first);

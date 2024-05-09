@@ -109,17 +109,17 @@ export default function TemplateDemo() {
                     </span>
                 </div>
 
-                <FormControl component="fieldset" variant="standard">
+                {/*<FormControl component="fieldset" variant="standard">*/}
 
-                    <FormGroup>
-                        <FormControlLabel
-                            control={
-                                <Switch checked={isSelected} onChange={handleCheckboxChange} name="gilad" />
-                            }
-                            label="OCR"
-                        />
-                    </FormGroup>
-                </FormControl>
+                {/*    <FormGroup>*/}
+                {/*        <FormControlLabel*/}
+                {/*            control={*/}
+                {/*                <Switch checked={isSelected} onChange={handleCheckboxChange} name="gilad" />*/}
+                {/*            }*/}
+                {/*            label="OCR"*/}
+                {/*        />*/}
+                {/*    </FormGroup>*/}
+                {/*</FormControl>*/}
 
                 <Button type="button" icon="pi pi-times" className="p-button-outlined p-button-rounded p-button-danger ml-auto" onClick={() => onTemplateRemove(file, props.onRemove)} />
             </div>
