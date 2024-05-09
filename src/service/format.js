@@ -17,18 +17,19 @@ export const formatQuestion = (question) => {
 	return question;
 };
 
-export const formatAnswer = (answer) => {
+export const formatAnswer = (answer, question) => {
 	try {
+		answer = answer.replaceAll(/\*\*(.*?)\*\*/g, (match, group) => {
+		  return toBoldUnicode(group);
+		});
+		answer = answer.replaceAll(/\*/g, "");
+		answer = answer.replace(/GEMINI_GENERATED:/, "");
+		answer = answer.replace(question, "");
+	}
+	catch (err) {
+		console.error(err);
+	}
 
-    answer = answer.replaceAll(/\*\*(.*?)\*\*/g, (match, group) => {
-      return toBoldUnicode(group);
-    });
-	answer = answer.replaceAll(/\*/g, "");
-	answer = answer.replace(/GEMINI_GENERATED:/, "");
-	
-  } catch (err) {
-    console.error(err);
-  }
 	return answer;
 };
 export const formatKeyword = (keyword) => {
